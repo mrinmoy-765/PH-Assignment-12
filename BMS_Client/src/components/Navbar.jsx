@@ -16,7 +16,7 @@ const Navbar = () => {
             <div
               tabIndex={0}
               role="button"
-              className="text-[#DBD8E3] hover:bg-[#2A2438] p-3 rounded-xl mx-2 lg:hidden"
+              className="text-[#DBD8E3] hover:bg-[#2A2438] p-1 md:p-2 lg:p-3 rounded-xl mx-1 md:mx-2 lg:mx-2 lg:hidden"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -46,12 +46,14 @@ const Navbar = () => {
               ))}
             </ul>
           </div>
-          <a className="pacifico-regular text-3xl text-white">Heaven Craft</a>
+          <a className="pacifico-regular md:text-xl lg:text-3xl text-white">
+            Heaven Craft
+          </a>
         </div>
 
         {/* Large screen menu */}
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1 text-white playwrite-de-grund-navItems">
+          <ul className="menu menu-horizontal px-1 text-white playwrite-de-grund-font">
             {routes.map((item, index) => (
               <li key={index} className="navItems">
                 <Link to={item.path}>{item.label}</Link>
