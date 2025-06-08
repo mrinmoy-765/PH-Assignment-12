@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+DE+Grund:wght@100..400&display=swap');
+
+
+.pacifico-regular {
+    font-family: "Pacifico", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.playwrite-de-grund-navItems {
+    font-family: "Playwrite DE Grund", cursive;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+ }
+
+
+
+ .custom-menu-item>a:hover
+ {
+     background-color: #DBD8E3 !important;
+     color: #352F44 !important;
+     /* optional, to make text readable */
+ }
+
+ .custom-menu-item>a:active,
+ .navItems>a:active{
+        background-color: #5C5470 !important;
+        color: white !important;
+        /* optional, to make text readable */
+}
+
+.navItems>a:hover{
+    background-color: #352F44!important;
+}
+
+.navItems>a:active{
+    background-color: #DBD8E3!important;
+    color: #352F44 !important;
+}
+
+   
