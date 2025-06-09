@@ -19,7 +19,7 @@ const Banner = () => {
           Welcome to Heaven Craft
         </h1>
         <p className="text-base sm:text-lg md:text-xl max-w-2xl playwrite-de-grund-font">
-          Discover your perfect home with RentNest. From cozy apartments to
+          Discover your perfect home with Heaven Craft. From cozy apartments to
           spacious family homes, we offer a diverse range of rental properties
           to suit your needs. Experience seamless renting with our expert team.
         </p>
