@@ -1,5 +1,17 @@
 import React from "react";
 import image1 from "../assets/image1.webp";
+import gallery2 from "../assets/gallery2.webp";
+import gallery3 from "../assets/gallery3.jpg";
+import gallery5 from "../assets/gallery5.jpg";
+import gallery6 from "../assets/gallery6.jpg";
+import gallery7 from "../assets/gallery7.jpg";
+import gallery8 from "../assets/gallery8.webp";
+import gallery9 from "../assets/gallery9.webp";
+import gallery10 from "../assets/gallery10.webp";
+import gallery11 from "../assets/gallery11.webp";
+
+import living_room from "../assets/living-room.png";
+
 const Gallery = () => {
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -13,14 +25,14 @@ const Gallery = () => {
         <div>
           <img
             className="h-auto max-w-full rounded-lg object-cover object-center "
-            src="https://images.unsplash.com/photo-1629367494173-c78a56567877?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=927&q=80"
+            src={gallery2}
             alt="gallery-photo"
           />
         </div>
         <div>
           <img
             className="h-auto max-w-full rounded-lg object-cover object-center"
-            src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80"
+            src={gallery3}
             alt="gallery-photo"
           />
         </div>
@@ -29,21 +41,21 @@ const Gallery = () => {
         <div>
           <img
             className="h-auto max-w-full rounded-lg object-cover object-center"
-            src="https://images.unsplash.com/photo-1552960562-daf630e9278b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+            src={gallery5}
             alt="gallery-photo"
           />
         </div>
         <div>
           <img
             className="h-auto max-w-full rounded-lg object-cover object-center"
-            src="https://images.unsplash.com/photo-1540553016722-983e48a2cd10?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
+            src={gallery6}
             alt="gallery-photo"
           />
         </div>
         <div>
           <img
             className="h-auto max-w-full rounded-lg object-cover object-center "
-            src="https://docs.material-tailwind.com/img/team-3.jpg"
+            src={living_room}
             alt="gallery-photo"
           />
         </div>
@@ -52,21 +64,21 @@ const Gallery = () => {
         <div>
           <img
             className="h-auto max-w-full rounded-lg object-cover object-center"
-            src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80"
+            src={gallery7}
             alt="gallery-photo"
           />
         </div>
         <div>
           <img
             className="h-auto max-w-full rounded-lg object-cover object-center "
-            src="https://docs.material-tailwind.com/img/team-3.jpg"
+            src={gallery8}
             alt="gallery-photo"
           />
         </div>
         <div>
           <img
             className="h-auto max-w-full rounded-lg object-cover object-center"
-            src="https://images.unsplash.com/photo-1552960562-daf630e9278b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+            src={gallery9}
             alt="gallery-photo"
           />
         </div>
@@ -75,15 +87,13 @@ const Gallery = () => {
         <div>
           <img
             className="h-auto max-w-full rounded-lg object-cover object-center"
-            src="https://images.unsplash.com/photo-1552960562-daf630e9278b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
-            alt="gallery-photo"
+            src={gallery10}
           />
         </div>
         <div>
           <img
             className="h-auto max-w-full rounded-lg object-cover object-center"
-            src="https://images.unsplash.com/photo-1629367494173-c78a56567877?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=927&q=80"
-            alt="gallery-photo"
+            src={gallery11}
           />
         </div>
       </div>
