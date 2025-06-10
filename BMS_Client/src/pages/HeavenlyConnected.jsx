@@ -3,7 +3,7 @@ import image1 from "../assets/image1.webp";
 
 const HeavenlyConnected = () => {
   return (
-    <div className="py-7 px-4">
+    <div className="py-7 px-4 bg-gradient-to-b from-[#2a24388a] via-[#DBD8E3] to-white">
       <div className="flex flex-col justify-between md:flex-row items-center lg:gap-6 gap-14">
         <img
           src={image1}
