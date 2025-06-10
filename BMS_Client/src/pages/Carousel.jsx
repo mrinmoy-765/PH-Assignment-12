@@ -4,6 +4,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Gallery from "./Gallery";
 import OurStory from "./OurStory";
+import MeetHeavenCraft from "./MeetHeavenCraft";
 
 const Carousel = () => {
   const settings = {
@@ -26,8 +27,8 @@ const Carousel = () => {
         <div className="w-full h-full">
           <Gallery />
         </div>
-        <div className="w-full h-full min-h-[500px]">
-          <p>this is it 3</p>
+        <div className="w-full h-full">
+          <MeetHeavenCraft />
         </div>
       </Slider>
     </div>
