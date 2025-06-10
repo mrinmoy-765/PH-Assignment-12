@@ -3,6 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Gallery from "./Gallery";
+import OurStory from "./OurStory";
 
 const Carousel = () => {
   const settings = {
@@ -11,19 +12,22 @@ const Carousel = () => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    adaptiveHeight: true,
   };
 
   return (
     <div className="w-full max-w-screen overflow-hidden px-5 pb-9 pt-4">
       <Slider {...settings}>
-        <div className="w-full">
+        <div className="w-full h-full">
+          {" "}
+          {/* Adjust height as needed */}
+          <OurStory />
+        </div>
+        <div className="w-full h-full">
           <Gallery />
         </div>
-        <div className="w-full">
-          <h3 className="text-center text-xl">This is it 2</h3>
-        </div>
-        <div className="w-full">
-          <h3 className="text-center text-xl">This is it 3</h3>
+        <div className="w-full h-full min-h-[500px]">
+          <p>this is it 3</p>
         </div>
       </Slider>
     </div>
