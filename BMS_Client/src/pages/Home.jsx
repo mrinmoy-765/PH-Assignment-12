@@ -1,3 +1,4 @@
+import AboutBuilding from "./AboutBuilding";
 import Banner from "./Banner";
 import Carousel from "./Carousel";
 import Gallery from "./Gallery";
@@ -8,6 +9,7 @@ const Home = () => {
       <Banner></Banner>
       <HeavenlyConnected></HeavenlyConnected>
       <Carousel></Carousel>
+      <AboutBuilding></AboutBuilding>
     </div>
   );
 };
