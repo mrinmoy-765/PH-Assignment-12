@@ -1,6 +1,6 @@
 import React from "react";
-import CONCRETE_LIGHT from "../assets/CONCRETE & LIGHT.jpeg";
-import At_A_Galance from "../assets/At_A_Galance.webp";
+import CONCRETE_LIGHT from "../../assets/CONCRETE & LIGHT.jpeg";
+import At_A_Galance from "../../assets/At_A_Galance.webp";
 
 const AboutBuilding = () => {
   return (

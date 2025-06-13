@@ -1,6 +1,5 @@
 import React from "react";
-import ourStory from "../assets/our_story.png";
-
+import ourStory from "../../assets/our_story.png";
 const OurStory = () => {
   return (
     <div className="flex flex-col md:flex-row items-start justify-center gap-6 p-6 ">

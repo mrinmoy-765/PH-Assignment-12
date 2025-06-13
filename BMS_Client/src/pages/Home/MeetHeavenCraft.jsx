@@ -1,5 +1,5 @@
 import React from "react";
-import HeavenCraftTeam from "../assets/HeavenCraftTeam.webp";
+import HeavenCraftTeam from "../../assets/HeavenCraftTeam.webp";
 
 const MeetHeavenCraft = () => {
   return (

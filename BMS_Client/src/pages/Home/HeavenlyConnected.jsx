@@ -1,5 +1,5 @@
 import React from "react";
-import image1 from "../assets/image1.webp";
+import image1 from "../../assets/image1.webp";
 
 const HeavenlyConnected = () => {
   return (
