@@ -1,8 +1,9 @@
 import AboutBuilding from "./AboutBuilding";
 import Banner from "./Banner";
 import Carousel from "./Carousel";
-import Gallery from "./Gallery";
 import HeavenlyConnected from "./HeavenlyConnected";
+import Location from "./location";
+
 const Home = () => {
   return (
     <div>
@@ -10,6 +11,7 @@ const Home = () => {
       <HeavenlyConnected></HeavenlyConnected>
       <Carousel></Carousel>
       <AboutBuilding></AboutBuilding>
+      <Location></Location>
     </div>
   );
 };

@@ -25,10 +25,10 @@ const Carousel = () => {
           <OurStory />
         </div>
         <div className="w-full h-full">
-          <Gallery />
+          <MeetHeavenCraft />
         </div>
         <div className="w-full h-full">
-          <MeetHeavenCraft />
+          <Gallery />
         </div>
       </Slider>
     </div>

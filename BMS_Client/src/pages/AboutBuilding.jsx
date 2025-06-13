@@ -133,7 +133,7 @@ const AboutBuilding = () => {
                   </span>
                 </li>
               </ul>
-              <p className="mt-6 text-[#DBD8E3] max-w-md playwrite-de-grund-font font-bold">
+              <p className="mt-6 text-gray-700 lg:text-[#DBD8E3] max-w-md playwrite-de-grund-font font-bold">
                 We invite you to explore the space where your new story begins.
                 Welcome home.
               </p>
