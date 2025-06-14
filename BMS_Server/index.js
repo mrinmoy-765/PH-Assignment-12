@@ -9,10 +9,11 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // Allow frontend origin
 // CORS
-const cors = require("cors");
+//middleware
+app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173", // frontend URL
+    origin: ["http://localhost:5173"],
     credentials: true,
   })
 );

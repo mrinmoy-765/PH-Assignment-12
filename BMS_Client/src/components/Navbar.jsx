@@ -1,6 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../css/custom.css";
 import useAuth from "../hooks/useAuth";
+import { RiLoginCircleLine } from "react-icons/ri";
+import Swal from "sweetalert2";
+import LoadingSpinner from "./LoadingSpinner";
+import axios from "axios";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 const Navbar = () => {
   const routes = [
@@ -8,7 +13,27 @@ const Navbar = () => {
     { path: "/apartment", label: "Apartment" },
   ];
 
-  const { user } = useAuth();
+  const { user, logOut } = useAuth();
+  const navigate = useNavigate();
+  const axiosPublic = useAxiosPublic();
+
+  const handleLogout = () => {
+    logOut() // Firebase signOut
+      .then(() => {
+        axiosPublic
+          .post("/logout", {}) // base URL already in hook
+          .then(() => {
+            Swal.fire("Logged out!", "", "success");
+            navigate("/");
+          })
+          .catch((err) => {
+            console.error("Error clearing cookie:", err);
+          });
+      })
+      .catch((error) => {
+        console.error("Firebase logout error:", error);
+      });
+  };
 
   return (
     <div>
@@ -68,34 +93,46 @@ const Navbar = () => {
         {/* Avatar section */}
         <div className="navbar-end">
           <div className="flex-none">
-            <div className="dropdown dropdown-end">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-ghost btn-circle avatar"
-              >
-                <div className="w-10 rounded-full">
-                  <img alt="Avatar" src={user.photoURL} />
+            {user ? (
+              <div className="dropdown dropdown-end">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn btn-ghost btn-circle avatar"
+                >
+                  <div className="w-10 rounded-full">
+                    <img alt="Avatar" src={user.photoURL} />
+                  </div>
                 </div>
+                <ul
+                  tabIndex={0}
+                  className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+                >
+                  <li>
+                    <a className="justify-between">
+                      Profile
+                      <span className="badge">New</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a>Settings</a>
+                  </li>
+                  <li>
+                    <button onClick={handleLogout}>Logout</button>
+                  </li>
+                </ul>
               </div>
-              <ul
-                tabIndex={0}
-                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            ) : (
+              <Link
+                to="/signIn"
+                className="flex flex-col items-center text-white"
               >
-                <li>
-                  <a className="justify-between">
-                    Profile
-                    <span className="badge">New</span>
-                  </a>
-                </li>
-                <li>
-                  <a>Settings</a>
-                </li>
-                <li>
-                  <a>Logout</a>
-                </li>
-              </ul>
-            </div>
+                <RiLoginCircleLine className="text-3xl hover:bg-[#352F44] p-0.5  rounded-lg" />
+                <p className="text-sm mt-1 montserrat hover:text-[#5C5470] hover:bg-gray-50 hover:rounded">
+                  Log in
+                </p>
+              </Link>
+            )}
           </div>
         </div>
       </div>
