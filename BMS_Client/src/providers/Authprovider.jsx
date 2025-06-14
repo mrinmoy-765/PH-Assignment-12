@@ -7,6 +7,8 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   updateProfile,
+  signInWithEmailAndPassword,
+  signOut,
   onAuthStateChanged,
 } from "firebase/auth";
 
@@ -15,15 +17,23 @@ export const AuthContext = createContext(null);
 const auth = getAuth(app);
 
 const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [firebaseUser, setFirebaseUser] = useState(null);
   const axiosPublic = useAxiosPublic();
 
   const createUser = (email, password) => {
     setLoading(true);
-    return createUserWithEmailAndPassword(auth, email, password).finally(() => {
-      setLoading(false);
-    });
+    return createUserWithEmailAndPassword(auth, email, password).finally(() =>
+      setLoading(false)
+    );
+  };
+
+  const signIn = (email, password) => {
+    setLoading(true);
+    return signInWithEmailAndPassword(auth, email, password).finally(() =>
+      setLoading(false)
+    );
   };
 
   const updateUserProfile = (name, photo) => {
@@ -33,27 +43,43 @@ const AuthProvider = ({ children }) => {
     });
   };
 
-  //   const logOut = () => {
-  //     setLoading(true);
-  //     return signOut(auth).finally(() => {
-  //       setLoading(false);
-  //     });
-  //   };
+  const logOut = () => {
+    setLoading(true);
+    return signOut(auth).finally(() => {
+      setLoading(false);
+    });
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setFirebaseUser(currentUser);
+      setUser(currentUser);
+      if (currentUser) {
+        const userInfo = { email: currentUser.email };
+        axiosPublic
+          .post("/jwt", userInfo, { withCredentials: true })
+          .then(() => {
+            setLoading(false);
+          });
+      } else {
+        axiosPublic
+          .post("/logout", {}, { withCredentials: true })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
     });
 
-    // Unsubscribe on cleanup
     return () => unsubscribe();
-  }, []);
+  }, [axiosPublic]);
 
   const authValue = {
+    user,
     firebaseUser,
     setFirebaseUser,
     createUser,
     updateUserProfile,
+    signIn,
+    logOut,
     loading,
   };
   return (

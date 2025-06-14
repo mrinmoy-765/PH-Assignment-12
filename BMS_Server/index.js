@@ -7,20 +7,13 @@ const port = process.env.PORT || 5000;
 require("dotenv").config();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
-//middleware
-// app.use(cookieParser());
-// app.use(
-//   cors({
-//     origin: ["https://elaborate-kangaroo-16f8b1.netlify.app"],
-//     credentials: true,
-//   })
-// );
-
 // Allow frontend origin
+// CORS
+const cors = require("cors");
 app.use(
   cors({
-    origin: "http://localhost:5173", // or "*" during development
-    credentials: true, // if you're sending cookies/auth headers
+    origin: "http://localhost:5173", // frontend URL
+    credentials: true,
   })
 );
 

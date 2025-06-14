@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
 import "../css/custom.css";
+import useAuth from "../hooks/useAuth";
 
 const Navbar = () => {
   const routes = [
     { path: "/", label: "Home" },
     { path: "/apartment", label: "Apartment" },
   ];
+
+  const { user } = useAuth();
 
   return (
     <div>
@@ -72,10 +75,7 @@ const Navbar = () => {
                 className="btn btn-ghost btn-circle avatar"
               >
                 <div className="w-10 rounded-full">
-                  <img
-                    alt="Avatar"
-                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                  />
+                  <img alt="Avatar" src={user.photoURL} />
                 </div>
               </div>
               <ul
