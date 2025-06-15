@@ -38,6 +38,7 @@ async function run() {
     await client.connect();
 
     const BMS_userCollection = client.db("BMS").collection("BmsUsers");
+    const apartmentsCollection = client.db("BMS").collection("Apartments");
 
     const verifyToken = (req, res, next) => {
       const token = req.cookies.accessToken;
@@ -78,21 +79,29 @@ async function run() {
       return res.status(200).json({ message: "Logged out successfully" });
     });
 
-
-    
     //create User
-      app.post('/users', async (req, res) => {
+    app.post("/users", async (req, res) => {
       const user = req.body;
-      const query = { email: user.email }
+      const query = { email: user.email };
       const existingUser = await userCollection.findOne(query);
       if (existingUser) {
-        return res.send({ message: 'user already exists', insertedId: null })
+        return res.send({ message: "user already exists", insertedId: null });
       }
       const result = await userCollection.insertOne(user);
       res.send(result);
     });
 
+    app.get("/apartments", async (req, res) => {
+      const result = await apartmentsCollection.find().toArray();
+      res.send(result);
+    });
 
+    // 🔄 Optional: Add new apartment (POST)
+    app.post("/apartments", async (req, res) => {
+      const newApartment = req.body;
+      const result = await apartmentsCollection.insertOne(newApartment);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     //  await client.db("admin").command({ ping: 1 });
