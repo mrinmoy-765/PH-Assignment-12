@@ -78,13 +78,21 @@ async function run() {
       return res.status(200).json({ message: "Logged out successfully" });
     });
 
+
+    
     //create User
-    app.post("/users", async (req, res) => {
-      const newUser = req.body;
-      // console.log(newUser);
-      const result = await BMS_userCollection.insertOne(newUser);
+      app.post('/users', async (req, res) => {
+      const user = req.body;
+      const query = { email: user.email }
+      const existingUser = await userCollection.findOne(query);
+      if (existingUser) {
+        return res.send({ message: 'user already exists', insertedId: null })
+      }
+      const result = await userCollection.insertOne(user);
       res.send(result);
     });
+
+
 
     // Send a ping to confirm a successful connection
     //  await client.db("admin").command({ ping: 1 });

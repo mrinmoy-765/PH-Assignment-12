@@ -5,6 +5,7 @@ import ball from "../../assets/Animation/ball.json";
 import useAuth from "../../hooks/useAuth";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import SocialLogin from "../../components/SocialLogin";
 import { Helmet } from "react-helmet";
 import Swal from "sweetalert2";
 
@@ -56,7 +57,7 @@ const Login = () => {
   return (
     <>
       <Helmet>
-        <title>HC | Login</title>
+        <title>HC | Sign in</title>
       </Helmet>
       <div className="bg-[#352F44] min-h-screen flex items-center justify-center px-4 py-8 overflow-hidden">
         <div className="flex flex-col md:flex-row w-full max-w-5xl bg-transparent relative">
@@ -112,6 +113,8 @@ const Login = () => {
                 Login
               </button>
             </form>
+            
+              <SocialLogin></SocialLogin>
 
             <p className="text-center text-sm text-gray-600 mt-6">
               Don't have an account?{" "}

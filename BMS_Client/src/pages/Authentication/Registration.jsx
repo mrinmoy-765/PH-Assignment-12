@@ -6,8 +6,10 @@ import Lottie from "lottie-react";
 import signUp from "../../assets/Animation/signUp.json";
 import ball from "../../assets/Animation/ball.json";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
+import { Helmet } from "react-helmet";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SocialLogin from "../../components/SocialLogin";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 const Registration = () => {
@@ -68,6 +70,9 @@ const Registration = () => {
   }
 
   return (
+    <><Helmet>
+        <title>HC | Sign up</title>
+      </Helmet>
     <div className="bg-[#352F44] min-h-screen flex items-center justify-center px-4 py-8 overflow-hidden">
       <div className="flex flex-col md:flex-row w-full max-w-5xl bg-transparent relative">
         {/* Left Panel */}
@@ -87,7 +92,7 @@ const Registration = () => {
 
         {/* Right Panel: Form */}
         <div className="bg-white rounded-2xl shadow-lg w-full md:w-1/2 p-8 flex flex-col justify-center mt-8 md:mt-0 md:absolute md:top-0 md:bottom-0 md:right-5">
-          <h2 className="text-2xl font-extrabold text-[#5C5470] mb-6 lora">
+          <h2 className="text-2xl font-extrabold text-[#5C5470] mb-3 lora">
             Create Account
           </h2>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -173,7 +178,7 @@ const Registration = () => {
               Register
             </button>
           </form>
-
+            <SocialLogin></SocialLogin>
           <p className="text-center text-sm text-gray-600 mt-6">
             Already have an account?{" "}
             <Link
@@ -186,6 +191,7 @@ const Registration = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
