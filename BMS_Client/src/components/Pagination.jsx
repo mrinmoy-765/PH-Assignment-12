@@ -1,48 +1,68 @@
 import React from "react";
 
-const MAX_PAGE_LINKS = 5;
-
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   if (totalPages <= 1) return null;
 
-  let pageNumbers = [];
+  const pageNumbers = [];
 
-  if (totalPages <= MAX_PAGE_LINKS) {
-    pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+  // Always show first 2 pages
+  if (totalPages <= 7) {
+    for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
   } else {
-    const minPage = Math.max(1, currentPage - 2);
-    const maxPage = Math.min(totalPages, minPage + MAX_PAGE_LINKS - 1);
-    pageNumbers = Array.from(
-      { length: maxPage - minPage + 1 },
-      (_, i) => minPage + i
-    );
+    pageNumbers.push(1, 2);
+
+    if (currentPage > 4) {
+      pageNumbers.push("...");
+    }
+
+    const start = Math.max(3, currentPage - 1);
+    const end = Math.min(totalPages - 2, currentPage + 1);
+
+    for (let i = start; i <= end; i++) {
+      if (!pageNumbers.includes(i)) pageNumbers.push(i);
+    }
+
+    if (currentPage < totalPages - 3) {
+      pageNumbers.push("...");
+    }
+
+    pageNumbers.push(totalPages - 1, totalPages);
   }
 
   return (
-    <div className="join flex justify-center mt-8">
+    <div className="flex justify-center lg:justify-end md:justify-end lg:mr-12 md:mr-12 mt-8 mb-4 gap-1">
       <button
-        className="join-item btn btn-sm btn-outline"
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
-        aria-label="Previous page"
+        className="px-3 py-1 border text-sm rounded border-[#5C5470] hover:bg-[#5C5470] hover:text-white disabled:opacity-50"
       >
         « Prev
       </button>
-      {pageNumbers.map((num) => (
-        <button
-          key={num}
-          className={`join-item btn btn-sm btn-outline ${num === currentPage ? "btn-active bg-primary text-white" : ""}`}
-          aria-current={num === currentPage ? "page" : undefined}
-          onClick={() => onPageChange(num)}
-        >
-          {num}
-        </button>
-      ))}
+
+      {pageNumbers.map((num, index) =>
+        num === "..." ? (
+          <span key={index} className="px-3 py-1 text-sm text-[#5C5470]">
+            ...
+          </span>
+        ) : (
+          <button
+            key={num}
+            onClick={() => onPageChange(num)}
+            className={`px-3 py-1 border text-sm rounded border-[#5C5470] ${
+              num === currentPage
+                ? "bg-[#352F44] text-white"
+                : "hover:bg-[#5C5470] hover:text-white"
+            }`}
+          >
+            {num}
+          </button>
+        )
+      )}
+
       <button
-        className="join-item btn btn-sm btn-outline"
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
-        aria-label="Next page"
+        className="px-3 py-1 border text-sm rounded border-[#5C5470] hover:bg-[#5C5470] hover:text-white disabled:opacity-50"
       >
         Next »
       </button>

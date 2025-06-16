@@ -91,9 +91,29 @@ async function run() {
       res.send(result);
     });
 
+    //get all apartments
     app.get("/apartments", async (req, res) => {
-      const result = await apartmentsCollection.find().toArray();
-      res.send(result);
+      try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 6;
+
+        const skip = (page - 1) * limit;
+
+        const totalCount = await apartmentsCollection.countDocuments();
+        const result = await apartmentsCollection
+          .find()
+          .skip(skip)
+          .limit(limit)
+          .toArray();
+
+        res.send({
+          result,
+          totalCount,
+        });
+      } catch (error) {
+        console.error("Error fetching apartments:", error);
+        res.status(500).send({ error: "Internal server error" });
+      }
     });
 
     // 🔄 Optional: Add new apartment (POST)
