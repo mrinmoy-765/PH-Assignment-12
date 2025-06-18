@@ -1,6 +1,13 @@
 const ApartmentCard = ({ apartment }) => {
-  const { apartment_no, block_name, floor_no, rent, image, description } =
-    apartment;
+  const {
+    apartment_no,
+    block_name,
+    floor_no,
+    rent,
+    image,
+    description,
+    is_available,
+  } = apartment;
 
   const apartmentDetails = [
     { label: `Apartment no: ${apartment_no}` },
@@ -17,8 +24,16 @@ const ApartmentCard = ({ apartment }) => {
         </span>
 
         <div className="flex justify-between items-center mb-2">
-          <h2 className="text-2xl font-bold">Premium</h2>
-          <span className="text-lg font-semibold">BDT {rent}</span>
+          <h2
+            className={`text-2xl font-bold work-sans ${
+              is_available ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {is_available ? "Available" : "Rented out"}
+          </h2>
+          <span className="text-base montserrat text-[#5C5470] ">
+            BDT {rent}
+          </span>
         </div>
 
         {/* Image wrapper with hover effects */}
@@ -67,5 +82,3 @@ const ApartmentCard = ({ apartment }) => {
 };
 
 export default ApartmentCard;
-
-
