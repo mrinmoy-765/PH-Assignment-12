@@ -1,16 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { GoSortDesc, GoSortAsc } from "react-icons/go";
 
 const SortDropdown = ({ onSortChange }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState("Sort by Rent");
 
-  const handleSelect = (value) => {
-    if (value === "desc") {
+  const [searchParams] = useSearchParams();
+
+  // Sync state when URL changes
+  useEffect(() => {
+    const sort = searchParams.get("sort");
+    if (sort === "desc") {
       setSelected("Max to Min Rent");
-    } else {
+    } else if (sort === "asc") {
       setSelected("Min to Max Rent");
+    } else {
+      setSelected("Sort by Rent");
     }
+  }, [searchParams]);
+
+  const handleSelect = (value) => {
     onSortChange(value);
     setIsOpen(false);
   };
@@ -51,4 +61,5 @@ const SortDropdown = ({ onSortChange }) => {
 };
 
 export default SortDropdown;
+
 

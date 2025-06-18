@@ -6,3 +6,8 @@ npm install react-hook-form react-toastify
 npm i react-helmet
 npm install @tanstack/react-query
 
+
+
+
+functionality:
+URL param based filtering

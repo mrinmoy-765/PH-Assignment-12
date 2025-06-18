@@ -3,14 +3,9 @@ import { FaFilter } from "react-icons/fa";
 import SortDropdown from "./SortDropdown";
 import CustomRangeSlider from "./CustomSlider";
 
-const Drawer = () => {
+const Drawer = ({ onSortChange }) => {
 
-    const [sortOrder, setSortOrder] = useState("");
-
-  const handleSortChange = (order) => {
-    setSortOrder(order);
-    // apply your sorting logic here
-  };
+ 
 
   return (
     <div className="drawer">
@@ -39,7 +34,7 @@ const Drawer = () => {
 
           <div className="mt-2">
             {/* sorting dropdown */}
-            <SortDropdown onSortChange={handleSortChange} />
+             <SortDropdown onSortChange={onSortChange} />
 
             {/* Range Slider */}
             <div className="mt-8">

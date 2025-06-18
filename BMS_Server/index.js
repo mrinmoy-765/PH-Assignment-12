@@ -91,17 +91,28 @@ async function run() {
       res.send(result);
     });
 
-    //get all apartments
+    // Get all apartments with pagination and sorting
     app.get("/apartments", async (req, res) => {
       try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 6;
+        const sortOrder = req.query.sort; // 'asc' or 'desc'
 
         const skip = (page - 1) * limit;
 
+        // Build sort condition
+        let sortCondition = {};
+        if (sortOrder === "asc") {
+          sortCondition = { rent: 1 }; // ascending
+        } else if (sortOrder === "desc") {
+          sortCondition = { rent: -1 }; // descending
+        }
+
         const totalCount = await apartmentsCollection.countDocuments();
+
         const result = await apartmentsCollection
           .find()
+          .sort(sortCondition) // apply sorting if provided
           .skip(skip)
           .limit(limit)
           .toArray();
