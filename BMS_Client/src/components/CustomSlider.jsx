@@ -4,7 +4,7 @@ const CustomRangeSlider = () => {
   const [value, setValue] = useState(40);
 
   return (
-    <div className="w-full px-4 py-6">
+    <div className="w-full px-4 py-2">
       <label className="block mb-4 text-[#5C5470] font-semibold work-sans">
         Rent Limit: <span className="text-xl">{value}</span>
       </label>
@@ -28,7 +28,7 @@ const CustomRangeSlider = () => {
           height: 24px;
           width: 24px;
           border-radius: 9999px;
-          background: #5C5470;
+          background: #5c5470;
           border: 3px solid white;
           margin-top: -11px; /* center the thumb */
           transition: 0.2s ease;
@@ -41,7 +41,7 @@ const CustomRangeSlider = () => {
           height: 24px;
           width: 24px;
           border-radius: 9999px;
-          background: #5C5470;
+          background: #5c5470;
           border: 3px solid white;
           transition: 0.2s ease;
         }

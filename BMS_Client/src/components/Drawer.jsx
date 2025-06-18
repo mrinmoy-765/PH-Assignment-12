@@ -1,12 +1,9 @@
-import { useState } from "react";
 import { FaFilter } from "react-icons/fa";
 import SortDropdown from "./SortDropdown";
 import CustomRangeSlider from "./CustomSlider";
+import SearchBar from "./SearchBar";
 
-const Drawer = ({ onSortChange }) => {
-
- 
-
+const Drawer = ({ onSortChange, onSearch }) => {
   return (
     <div className="drawer">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
@@ -34,7 +31,14 @@ const Drawer = ({ onSortChange }) => {
 
           <div className="mt-2">
             {/* sorting dropdown */}
-             <SortDropdown onSortChange={onSortChange} />
+            <SortDropdown onSortChange={onSortChange} />
+
+            {/* Search Bar */}
+            <div className="mt-10">
+              <div className="mt-10">
+                <SearchBar onSearch={onSearch} />
+              </div>
+            </div>
 
             {/* Range Slider */}
             <div className="mt-8">

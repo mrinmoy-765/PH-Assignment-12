@@ -5,9 +5,7 @@ npm install react-icons --save
 npm install react-hook-form react-toastify
 npm i react-helmet
 npm install @tanstack/react-query
-
-
-
+npm install lucide-react
 
 functionality:
 URL param based filtering

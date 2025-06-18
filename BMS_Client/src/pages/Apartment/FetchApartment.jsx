@@ -16,12 +16,13 @@ const FetchApartment = () => {
   // ✅ Read page and sortOrder from URL
   const currentPage = parseInt(searchParams.get("page")) || 1;
   const sortOrder = searchParams.get("sort") || "";
+  const search = searchParams.get("search") || "";
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["apartments", currentPage, sortOrder],
+    queryKey: ["apartments", currentPage, sortOrder, search],
     queryFn: async () => {
       const res = await axiosPublic.get(
-        `/apartments?page=${currentPage}&limit=${ITEMS_PER_PAGE}&sort=${sortOrder}`
+        `/apartments?page=${currentPage}&limit=${ITEMS_PER_PAGE}&sort=${sortOrder}&search=${search}`
       );
       return res.data;
     },
@@ -53,10 +54,20 @@ const FetchApartment = () => {
     });
   };
 
+  // ✅ Handle search change by updating URL param
+  const handleSearch = (searchTerm) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("search", searchTerm);
+      newParams.set("page", 1); // reset to page 1
+      return newParams;
+    });
+  };
+
   return (
     <>
-      <Drawer onSortChange={handleSortChange} />
-      
+      <Drawer onSortChange={handleSortChange} onSearch={handleSearch} />
+
       <div className="grid lg:grid-cols-3 grid-cols-1 md:grid-cols-2 gap-6 py-4">
         {apartments.map((apt) => (
           <ApartmentCard key={apt.apartment_no} apartment={apt} />
@@ -73,4 +84,3 @@ const FetchApartment = () => {
 };
 
 export default FetchApartment;
-

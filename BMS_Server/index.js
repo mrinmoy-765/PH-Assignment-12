@@ -91,36 +91,41 @@ async function run() {
       res.send(result);
     });
 
-    // Get all apartments with pagination and sorting
+    //get appartments
     app.get("/apartments", async (req, res) => {
       try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 6;
-        const sortOrder = req.query.sort; // 'asc' or 'desc'
+        const sortOrder = req.query.sort;
+        const search = req.query.search || "";
 
         const skip = (page - 1) * limit;
 
-        // Build sort condition
         let sortCondition = {};
-        if (sortOrder === "asc") {
-          sortCondition = { rent: 1 }; // ascending
-        } else if (sortOrder === "desc") {
-          sortCondition = { rent: -1 }; // descending
-        }
+        if (sortOrder === "asc") sortCondition = { rent: 1 };
+        else if (sortOrder === "desc") sortCondition = { rent: -1 };
 
-        const totalCount = await apartmentsCollection.countDocuments();
+        // Build search condition
+        const searchCondition = {
+          $or: [
+            { block: { $regex: search, $options: "i" } },
+            { apartment_no: { $regex: search, $options: "i" } },
+            { floor: { $regex: search, $options: "i" } },
+          ],
+        };
+
+        const totalCount = await apartmentsCollection.countDocuments(
+          searchCondition
+        );
 
         const result = await apartmentsCollection
-          .find()
-          .sort(sortCondition) // apply sorting if provided
+          .find(searchCondition)
+          .sort(sortCondition)
           .skip(skip)
           .limit(limit)
           .toArray();
 
-        res.send({
-          result,
-          totalCount,
-        });
+        res.send({ result, totalCount });
       } catch (error) {
         console.error("Error fetching apartments:", error);
         res.status(500).send({ error: "Internal server error" });
