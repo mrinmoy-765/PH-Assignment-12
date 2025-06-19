@@ -4,7 +4,13 @@ import CustomRangeSlider from "./CustomSlider";
 import SearchBar from "./SearchBar";
 import SortCheckBox from "./sortCheckBox";
 
-const Drawer = ({ onSortChange, onSearch, onCheckBoxClick }) => {
+const Drawer = ({
+  onSortChange,
+  onSearch,
+  onCheckBoxClick,
+  onSlide,
+  slider,
+}) => {
   return (
     <div className="drawer">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
@@ -43,7 +49,11 @@ const Drawer = ({ onSortChange, onSearch, onCheckBoxClick }) => {
 
             {/* Range Slider */}
             <div className="mt-8">
-              <CustomRangeSlider />
+              <CustomRangeSlider
+                onSlide={onSlide}
+                initialValue={slider}
+                slider={slider}
+              />
             </div>
 
             {/* checkbox */}

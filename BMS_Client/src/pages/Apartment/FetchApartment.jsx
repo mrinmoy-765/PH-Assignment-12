@@ -1,4 +1,5 @@
 import { useSearchParams } from "react-router-dom";
+import { useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import ApartmentCard from "./ApartmentCard";
@@ -9,35 +10,27 @@ const ITEMS_PER_PAGE = 6;
 
 const FetchApartment = () => {
   const axiosPublic = useAxiosPublic();
-
-  // ✅ Use URLSearchParams hook
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // ✅ Read page and sortOrder from URL
   const currentPage = parseInt(searchParams.get("page")) || 1;
   const sortOrder = searchParams.get("sort") || "";
   const search = searchParams.get("search") || "";
   const availability = searchParams.get("availability") || "all";
+  const slider = parseInt(searchParams.get("slider")) || 22000;
 
-
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["apartments", currentPage, sortOrder, search, availability],
-    queryFn: async () => {
-      const res = await axiosPublic.get(
-        `/apartments?page=${currentPage}&limit=${ITEMS_PER_PAGE}&sort=${sortOrder}&search=${search}&availability=${availability}`
-      );
-      return res.data;
+  // Hooks must always be top-level
+  const handleSlider = useCallback(
+    (sliderValue) => {
+      setSearchParams((prev) => {
+        const newParams = new URLSearchParams(prev);
+        newParams.set("slider", sliderValue);
+        newParams.set("page", 1);
+        return newParams;
+      });
     },
-    keepPreviousData: true,
-  });
+    [setSearchParams]
+  );
 
-  if (isLoading) return <p>Loading apartments...</p>;
-  if (isError) return <p>Error: {error.message}</p>;
-
-  const { result: apartments, totalCount } = data;
-  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
-
-  // ✅ Handle page change by updating URL param
   const handlePageChange = (page) => {
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
@@ -46,17 +39,15 @@ const FetchApartment = () => {
     });
   };
 
-  // ✅ Handle sort change by updating URL param
   const handleSortChange = (sortValue) => {
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
       newParams.set("sort", sortValue);
-      newParams.set("page", 1); // reset to first page
+      newParams.set("page", 1); // Reset to page 1
       return newParams;
     });
   };
 
-  // ✅ Handle search  by updating URL param
   const handleSearch = (searchTerm) => {
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
@@ -66,20 +57,51 @@ const FetchApartment = () => {
     });
   };
 
-  // ✅ Handle checkbox sort by updating URL param
   const handleCheckBoxSort = (availabilityValue) => {
-  setSearchParams((prev) => {
-    const newParams = new URLSearchParams(prev);
-    newParams.set("availability", availabilityValue);
-    newParams.set("page", 1); // reset page to 1 after filtering
-    return newParams;
-  });
-};
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("availability", availabilityValue);
+      newParams.set("page", 1);
+      return newParams;
+    });
+  };
 
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: [
+      "apartments",
+      currentPage,
+      sortOrder,
+      search,
+      availability,
+      slider,
+    ],
+    queryFn: async () => {
+      const res = await axiosPublic.get(
+        `/apartments?page=${currentPage}&limit=${ITEMS_PER_PAGE}&sort=${sortOrder}&search=${search}&availability=${availability}&slider=${slider}`
+      );
+      return res.data;
+    },
+    keepPreviousData: true,
+  });
+
+  // UI: Loading & Error Handling
+  if (isLoading) return <p>Loading apartments...</p>;
+  if (isError) return <p>Error: {error.message}</p>;
+  if (!data || !data.result) return <p>No apartments found.</p>;
+
+  // Safe destructuring
+  const { result: apartments, totalCount } = data;
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
   return (
     <>
-      <Drawer onSortChange={handleSortChange} onSearch={handleSearch} onCheckBoxClick={handleCheckBoxSort} />
+      <Drawer
+        onSortChange={handleSortChange}
+        onSearch={handleSearch}
+        onCheckBoxClick={handleCheckBoxSort}
+        onSlide={handleSlider}
+        slider={slider} 
+      />
 
       <div className="grid lg:grid-cols-3 grid-cols-1 md:grid-cols-2 gap-6 py-4">
         {apartments.map((apt) => (

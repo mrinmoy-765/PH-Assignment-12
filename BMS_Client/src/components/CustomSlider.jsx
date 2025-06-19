@@ -1,7 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import useDebounce from "../hooks/useDebounce";
 
-const CustomRangeSlider = () => {
-  const [value, setValue] = useState(40);
+const CustomRangeSlider = ({ initialValue, onSlide, slider }) => {
+  const [value, setValue] = useState(initialValue);
+  const debouncedValue = useDebounce(value, 400);
+
+  // Whenever debouncedValue changes, trigger onSlide
+  useEffect(() => {
+    onSlide(debouncedValue);
+  }, [debouncedValue, onSlide]);
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+
+  const handleChange = (e) => {
+    const newValue = parseInt(e.target.value);
+    setValue(newValue);
+  };
 
   return (
     <div className="w-full px-4 py-2">
@@ -12,12 +28,12 @@ const CustomRangeSlider = () => {
       <input
         type="range"
         min="0"
-        max="100"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        max="27000"
+        value={slider}
+        onChange={handleChange}
         className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gradient-to-r from-[#5C5470] to-[#DBD8E3]"
         style={{
-          backgroundSize: `${value}% 100%`,
+          backgroundSize: `${(value / 27000) * 100}% 100%`,
           backgroundRepeat: "no-repeat",
         }}
       />

@@ -99,39 +99,35 @@ async function run() {
         const sortOrder = req.query.sort;
         const search = req.query.search || "";
         const availability = req.query.availability || "all";
+        const slider = parseInt(req.query.slider) || 22000; // default max rent
 
         const skip = (page - 1) * limit;
 
-        // Sort condition asc & desc
         let sortCondition = {};
         if (sortOrder === "asc") sortCondition = { rent: 1 };
         else if (sortOrder === "desc") sortCondition = { rent: -1 };
 
-        // Build search condition
         const searchCondition = {
           $or: [
             { block: { $regex: search, $options: "i" } },
             { apartment_no: { $regex: search, $options: "i" } },
             { floor: { $regex: search, $options: "i" } },
           ],
+          rent: { $lte: slider }, // ✅ price filter applied here
         };
 
-        // Merge availability filter into searchCondition
-        const finalQuery = { ...searchCondition };
-
         if (availability === "available") {
-          finalQuery.is_available = true;
+          searchCondition.is_available = true;
         } else if (availability === "rented") {
-          finalQuery.is_available = false;
+          searchCondition.is_available = false;
         }
-        // else all — no filter
 
         const totalCount = await apartmentsCollection.countDocuments(
-          finalQuery
+          searchCondition
         );
 
         const result = await apartmentsCollection
-          .find(finalQuery)
+          .find(searchCondition)
           .sort(sortCondition)
           .skip(skip)
           .limit(limit)
