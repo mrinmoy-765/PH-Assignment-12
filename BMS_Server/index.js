@@ -91,16 +91,18 @@ async function run() {
       res.send(result);
     });
 
-    //get appartments
+    //get apartments
     app.get("/apartments", async (req, res) => {
       try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 6;
         const sortOrder = req.query.sort;
         const search = req.query.search || "";
+        const availability = req.query.availability || "all";
 
         const skip = (page - 1) * limit;
 
+        // Sort condition asc & desc
         let sortCondition = {};
         if (sortOrder === "asc") sortCondition = { rent: 1 };
         else if (sortOrder === "desc") sortCondition = { rent: -1 };
@@ -114,12 +116,22 @@ async function run() {
           ],
         };
 
+        // Merge availability filter into searchCondition
+        const finalQuery = { ...searchCondition };
+
+        if (availability === "available") {
+          finalQuery.is_available = true;
+        } else if (availability === "rented") {
+          finalQuery.is_available = false;
+        }
+        // else all — no filter
+
         const totalCount = await apartmentsCollection.countDocuments(
-          searchCondition
+          finalQuery
         );
 
         const result = await apartmentsCollection
-          .find(searchCondition)
+          .find(finalQuery)
           .sort(sortCondition)
           .skip(skip)
           .limit(limit)

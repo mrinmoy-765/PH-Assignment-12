@@ -2,8 +2,9 @@ import { FaFilter } from "react-icons/fa";
 import SortDropdown from "./SortDropdown";
 import CustomRangeSlider from "./CustomSlider";
 import SearchBar from "./SearchBar";
+import SortCheckBox from "./sortCheckBox";
 
-const Drawer = ({ onSortChange, onSearch }) => {
+const Drawer = ({ onSortChange, onSearch, onCheckBoxClick }) => {
   return (
     <div className="drawer">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
@@ -46,23 +47,7 @@ const Drawer = ({ onSortChange, onSearch }) => {
             </div>
 
             {/* checkbox */}
-            <fieldset className="fieldset bg-base-100 border-base-300 rounded-box w-auto border p-4 mt-3">
-              <legend className="fieldset-legend text-base text-[#5C5470] work-sans">
-                Availability
-              </legend>
-              <label className="label work-sans">
-                <input type="checkbox" defaultChecked className="checkbox" />
-                All
-              </label>
-              <label className="label work-sans">
-                <input type="checkbox " className="checkbox" />
-                Available
-              </label>
-              <label className="label work-sans">
-                <input type="checkbox" className="checkbox" />
-                Rented out
-              </label>
-            </fieldset>
+            <SortCheckBox onCheckBoxClick={onCheckBoxClick} />
           </div>
         </ul>
       </div>

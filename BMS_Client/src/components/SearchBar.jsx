@@ -6,7 +6,6 @@ const SearchBar = ({ onSearch }) => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log("truggered");
     onSearch(search.trim());
   };
 
