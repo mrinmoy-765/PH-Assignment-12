@@ -16,7 +16,7 @@ const FetchApartment = () => {
   const sortOrder = searchParams.get("sort") || "";
   const search = searchParams.get("search") || "";
   const availability = searchParams.get("availability") || "all";
-  const slider = parseInt(searchParams.get("slider")) || 22000;
+  const slider = parseInt(searchParams.get("slider")) || 27000;
 
   // Hooks must always be top-level
   const handleSlider = useCallback(
@@ -100,7 +100,7 @@ const FetchApartment = () => {
         onSearch={handleSearch}
         onCheckBoxClick={handleCheckBoxSort}
         onSlide={handleSlider}
-        slider={slider} 
+        slider={slider}
       />
 
       <div className="grid lg:grid-cols-3 grid-cols-1 md:grid-cols-2 gap-6 py-4">

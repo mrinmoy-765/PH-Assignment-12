@@ -1,14 +1,7 @@
 import { useState, useEffect } from "react";
-import useDebounce from "../hooks/useDebounce";
 
-const CustomRangeSlider = ({ initialValue, onSlide, slider }) => {
+const CustomRangeSlider = ({ initialValue, onSlide }) => {
   const [value, setValue] = useState(initialValue);
-  const debouncedValue = useDebounce(value, 400);
-
-  // Whenever debouncedValue changes, trigger onSlide
-  useEffect(() => {
-    onSlide(debouncedValue);
-  }, [debouncedValue, onSlide]);
 
   useEffect(() => {
     setValue(initialValue);
@@ -24,20 +17,20 @@ const CustomRangeSlider = ({ initialValue, onSlide, slider }) => {
       <label className="block mb-4 text-[#5C5470] font-semibold work-sans">
         Rent Limit: <span className="text-xl">{value}</span>
       </label>
-
       <input
         type="range"
         min="0"
         max="27000"
-        value={slider}
-        onChange={handleChange}
+        value={value} // use internal state
+        onChange={handleChange} // update value on drag
+        onMouseUp={() => onSlide(value)} // trigger on release
+        onTouchEnd={() => onSlide(value)} // trigger on release (mobile)
         className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gradient-to-r from-[#5C5470] to-[#DBD8E3]"
         style={{
           backgroundSize: `${(value / 27000) * 100}% 100%`,
           backgroundRepeat: "no-repeat",
         }}
       />
-
       <style jsx>{`
         input[type="range"]::-webkit-slider-thumb {
           appearance: none;
