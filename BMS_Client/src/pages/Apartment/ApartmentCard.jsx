@@ -57,16 +57,22 @@ const ApartmentCard = ({ apartment }) => {
         image,
         status: "pending",
       };
-      axiosSecure.post("/agreement", agreementItem).then((res) => {
-        console.log(res.data);
-        if (res.data.insertedId) {
-          toast.success(
-            <span>
-              Apartment <b>{apartment_no}</b> is requested for Agreement
-            </span>
-          );
-        }
-      });
+      axiosSecure
+        .post("/agreement", agreementItem)
+        .then((res) => {
+          if (res.data.insertedId) {
+            toast.success(
+              <span>
+                Apartment <b>{apartment_no}</b> is requested for Agreement
+              </span>
+            );
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          const message = err.response?.data?.message || "Something went wrong";
+          toast.error(message);
+        });
     } else {
       Swal.fire({
         title: "You are not Logged In",

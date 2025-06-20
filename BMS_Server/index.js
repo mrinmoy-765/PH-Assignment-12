@@ -44,7 +44,7 @@ async function run() {
     //middleware
     const verifyToken = (req, res, next) => {
       const token = req.cookies.accessToken;
-      //  console.log("indise verify token", token);
+      console.log("inside verify token", token);
 
       if (!token) return res.status(401).send("Unauthorized");
 
