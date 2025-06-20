@@ -39,7 +39,9 @@ async function run() {
 
     const BMS_userCollection = client.db("BMS").collection("BmsUsers");
     const apartmentsCollection = client.db("BMS").collection("Apartments");
+    const agreementCollection = client.db("BMS").collection("Agreements");
 
+    //middleware
     const verifyToken = (req, res, next) => {
       const token = req.cookies.accessToken;
       //  console.log("indise verify token", token);
@@ -145,6 +147,35 @@ async function run() {
       const newApartment = req.body;
       const result = await apartmentsCollection.insertOne(newApartment);
       res.send(result);
+    });
+
+    //Make an Agreement
+    // POST: Create agreement with validation
+    app.post("/agreement", verifyToken, async (req, res) => {
+      const newAgreement = req.body;
+      const userEmail = newAgreement.email;
+
+      try {
+        // Check for existing pending or approved agreement for this user
+        const existing = await agreementCollection.findOne({
+          email: userEmail,
+          status: { $in: ["pending", "approved"] },
+        });
+
+        if (existing) {
+          return res.status(400).send({
+            message:
+              "You already have a pending or approved agreement. Cannot request another.",
+          });
+        }
+
+        // Insert new agreement
+        const result = await agreementCollection.insertOne(newAgreement);
+        res.status(201).send(result);
+      } catch (error) {
+        console.error("Error inserting agreement:", error);
+        res.status(500).send({ message: "Server error" });
+      }
     });
 
     // Send a ping to confirm a successful connection

@@ -4,7 +4,6 @@ import useAuth from "../hooks/useAuth";
 import { RiLoginCircleLine } from "react-icons/ri";
 import Swal from "sweetalert2";
 import LoadingSpinner from "./LoadingSpinner";
-import axios from "axios";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 
 const Navbar = () => {

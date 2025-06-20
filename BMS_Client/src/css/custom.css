@@ -78,4 +78,28 @@
     color: #352F44 !important;
 }
 
+
+/* Example: custom.css */
+.my-swal-popup {
+    font-family: 'Poppins', sans-serif;
+}
+
+.my-swal-title {
+    font-size: 22px;
+    color: #fc7272;
+    font-weight: 600;
+}
+
+.my-swal-text {
+    font-size: 18px;
+    color: #40394a;
+}
+
+.my-swal-button {
+    background-color: #5C5470;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 6px;
+}
+
    

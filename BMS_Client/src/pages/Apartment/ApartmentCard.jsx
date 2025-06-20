@@ -1,9 +1,12 @@
 import Swal from "sweetalert2";
 import useAuth from "../../hooks/useAuth";
-import axiosSecure from "../../hooks/useAxiosSecure";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ApartmentCard = ({ apartment }) => {
+  const axiosSecure = useAxiosSecure();
   const {
     apartment_no,
     block_name,
@@ -26,28 +29,42 @@ const ApartmentCard = ({ apartment }) => {
   ];
 
   const handleAgreement = () => {
-    console.log("triggered");
+    //validate if appartment is available or not
+    if (is_available === false) {
+      Swal.fire({
+        title: "This Apartment is not available for Agreement.",
+        text: "Please try another Apartment.",
+        icon: "warning",
+        customClass: {
+          popup: "my-swal-popup",
+          title: "my-swal-title",
+          htmlContainer: "my-swal-text",
+          confirmButton: "my-swal-button",
+        },
+      });
+      return;
+    }
+
     if (user && user.email) {
       //send agreement details in database
       const agreementItem = {
         email: user.email,
+        name: user.name,
         apartment_no,
         block_name,
         floor_no,
         rent,
         image,
-        description,
+        status: "pending",
       };
       axiosSecure.post("/agreement", agreementItem).then((res) => {
         console.log(res.data);
         if (res.data.insertedId) {
-          Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: `${apartment_no} is requested for Agreemnet`,
-            showConfirmButton: false,
-            timer: 1500,
-          });
+          toast.success(
+            <span>
+              Apartment <b>{apartment_no}</b> is requested for Agreement
+            </span>
+          );
         }
       });
     } else {
