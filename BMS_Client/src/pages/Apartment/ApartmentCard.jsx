@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 import useAuth from "../../hooks/useAuth";
+import axiosSecure from "../../hooks/useAxiosSecure";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const ApartmentCard = ({ apartment }) => {
@@ -24,7 +25,48 @@ const ApartmentCard = ({ apartment }) => {
     { label: `Rent: BDT ${rent}` },
   ];
 
-  const handleAgreement = () => {};
+  const handleAgreement = () => {
+    console.log("triggered");
+    if (user && user.email) {
+      //send agreement details in database
+      const agreementItem = {
+        email: user.email,
+        apartment_no,
+        block_name,
+        floor_no,
+        rent,
+        image,
+        description,
+      };
+      axiosSecure.post("/agreement", agreementItem).then((res) => {
+        console.log(res.data);
+        if (res.data.insertedId) {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: `${apartment_no} is requested for Agreemnet`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      });
+    } else {
+      Swal.fire({
+        title: "You are not Logged In",
+        text: "Please login to make an Agreement?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, login!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          //   send the user to the login page
+          navigate("/signIn", { state: { from: location } });
+        }
+      });
+    }
+  };
 
   return (
     <div className="group card max-w-sm w-full bg-base-100 shadow-sm mx-auto transform transition duration-300 hover:scale-105">
