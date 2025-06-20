@@ -1,3 +1,7 @@
+import Swal from "sweetalert2";
+import useAuth from "../../hooks/useAuth";
+import { useLocation, useNavigate } from "react-router-dom";
+
 const ApartmentCard = ({ apartment }) => {
   const {
     apartment_no,
@@ -9,12 +13,18 @@ const ApartmentCard = ({ apartment }) => {
     is_available,
   } = apartment;
 
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const apartmentDetails = [
     { label: `Apartment no: ${apartment_no}` },
     { label: `Block: ${block_name}` },
     { label: `Floor: ${floor_no}` },
     { label: `Rent: BDT ${rent}` },
   ];
+
+  const handleAgreement = () => {};
 
   return (
     <div className="group card max-w-sm w-full bg-base-100 shadow-sm mx-auto transform transition duration-300 hover:scale-105">
@@ -72,7 +82,10 @@ const ApartmentCard = ({ apartment }) => {
         <p className="mt-3 text-sm">{description}</p>
 
         <div className="mt-6">
-          <button className="btn bg-[#5C5470] btn-block text-white">
+          <button
+            onClick={handleAgreement}
+            className="btn bg-[#5C5470] btn-block text-white"
+          >
             Agreement
           </button>
         </div>
