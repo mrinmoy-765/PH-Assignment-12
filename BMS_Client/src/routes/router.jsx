@@ -5,6 +5,8 @@ import Registration from "../pages/Authentication/Registration";
 import LogIn from "../pages/Authentication/Login";
 import FetchApartment from "../pages/Apartment/FetchApartment";
 import DashboardLayout from "../layouts/DashboardLayout";
+import UserDashboard from "../pages/Dashboard/UserDashboard";
+import UserProfile from "../pages/Dashboard/UserProfile";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +26,16 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <DashboardLayout></DashboardLayout>,
+    children: [
+      {
+        path: "/dashboard",
+        element: <UserDashboard></UserDashboard>,
+      },
+      {
+        path: "/dashboard/userProfile",
+        element: <UserProfile></UserProfile>,
+      },
+    ],
   },
   {
     path: "/signUp",

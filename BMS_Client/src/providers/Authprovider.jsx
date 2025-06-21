@@ -60,60 +60,6 @@ const AuthProvider = ({ children }) => {
     });
   };
 
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-  //     // Set the Firebase user state immediately
-  //     setUser(currentUser);
-
-  //     if (currentUser) {
-  //       // --- LOGGED-IN LOGIC ---
-  //       const userInfo = { email: currentUser.email };
-
-  //       // Start the promise chain
-  //       axiosPublic
-  //         .post("/jwt", userInfo, { withCredentials: true })
-  //         .then(() => {
-  //           // After JWT is set, fetch the MongoDB user.
-  //           // IMPORTANT: Return the next promise so the chain continues.
-  //           return axios.get("http://localhost:5000/users", {
-  //             params: { email: currentUser.email },
-  //             withCredentials: true,
-  //           });
-  //         })
-  //         .then((res) => {
-  //           // Once the MongoDB user is fetched, set that state.
-  //           setMongoUser(res.data);
-  //         })
-  //         .catch((error) => {
-  //           // It's good practice to handle potential errors
-  //           console.error("Error fetching user data:", error);
-  //         })
-  //         .finally(() => {
-  //           // This will run after the chain completes, whether it succeeded or failed.
-  //           // This is the correct place to stop the loading indicator.
-  //           setLoading(false);
-  //         });
-  //     } else {
-  //       // --- LOGGED-OUT LOGIC ---
-  //       axiosPublic
-  //         .post("/logout", {}, { withCredentials: true })
-  //         .catch((error) => {
-  //           console.error("Logout request failed:", error);
-  //         })
-  //         .finally(() => {
-  //           // Clear any stale user data and stop loading
-  //           setMongoUser(null);
-  //           setLoading(false);
-  //         });
-  //     }
-  //   });
-
-  //   // Cleanup subscription on component unmount
-  //   return () => {
-  //     unsubscribe();
-  //   };
-  // }, [axiosPublic]); // Dependency array
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -133,6 +79,7 @@ const AuthProvider = ({ children }) => {
           .then((res) => {
             // Set the MongoDB user data
             setMongoUser(res.data);
+            console.log(mongoUser.role);
           })
           .catch((error) => {
             console.error("Error fetching user data:", error);

@@ -2,11 +2,16 @@ import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth"; // Assume user role is available here
 
 const Sidebar = () => {
-  const { mongoUser } = useAuth(); // userRole = "user" | "member" | "admin"
-  //console.log(mongoUser.role);
+  const { mongoUser, loading } = useAuth(); // userRole = "user" | "member" | "admin"
+
+  if (loading) {
+    return <div>Loading...</div>; // or a spinner
+  }
+
+  console.log(mongoUser.role);
 
   const commonLinks = [
-    { to: "/dashboard/profile", label: "Profile" },
+    { to: "/dashboard/userProfile", label: "Profile" },
     { to: "/dashboard/announcements", label: "Announcements" },
   ];
 
