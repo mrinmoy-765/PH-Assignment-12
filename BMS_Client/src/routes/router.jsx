@@ -4,6 +4,7 @@ import Home from "../pages/Home/Home";
 import Registration from "../pages/Authentication/Registration";
 import LogIn from "../pages/Authentication/Login";
 import FetchApartment from "../pages/Apartment/FetchApartment";
+import DashboardLayout from "../layouts/DashboardLayout";
 
 const router = createBrowserRouter([
   {
@@ -15,10 +16,14 @@ const router = createBrowserRouter([
         element: <Home></Home>,
       },
       {
-        path:"/apartment",
-        element:<FetchApartment></FetchApartment>
-      }
+        path: "/apartment",
+        element: <FetchApartment></FetchApartment>,
+      },
     ],
+  },
+  {
+    path: "/dashboard",
+    element: <DashboardLayout></DashboardLayout>,
   },
   {
     path: "/signUp",

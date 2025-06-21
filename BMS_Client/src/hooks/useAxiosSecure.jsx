@@ -44,7 +44,7 @@ const useAxiosSecure = () => {
         // Wait 5 seconds, then log out and redirect
         setTimeout(async () => {
           await logOut();
-          navigate("/login");
+          navigate("/signIn");
         }, 5000);
       }
 

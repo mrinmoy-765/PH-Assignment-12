@@ -69,7 +69,7 @@ const ApartmentCard = ({ apartment }) => {
           }
         })
         .catch((err) => {
-          console.error(err);
+          //  console.error(err);
           const message = err.response?.data?.message || "Something went wrong";
           toast.error(message);
         });
