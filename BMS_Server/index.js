@@ -93,6 +93,26 @@ async function run() {
       res.send(result);
     });
 
+    //get user by email retrived from firebase
+    app.get("/users", verifyToken, async (req, res) => {
+      try {
+        const email = req.query.email;
+        if (!email)
+          return res.status(400).send({ message: "Email is required" });
+
+        const user = await BMS_userCollection.findOne({
+          email: { $regex: `^${email}$`, $options: "i" },
+        });
+
+        if (!user) return res.status(404).send({ message: "User not found" });
+
+        res.send(user);
+      } catch (error) {
+        console.error("Error in /users route:", error);
+        res.status(500).send({ message: "Internal Server Error" });
+      }
+    });
+
     //get apartments
     app.get("/apartments", async (req, res) => {
       try {

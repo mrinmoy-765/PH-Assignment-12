@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth"; // Assume user role is available here
 
 const Sidebar = () => {
-  const { userRole } = useAuth(); // userRole = "user" | "member" | "admin"
+  const { mongoUser } = useAuth(); // userRole = "user" | "member" | "admin"
+  //console.log(mongoUser.role);
 
   const commonLinks = [
     { to: "/dashboard/profile", label: "Profile" },
@@ -21,8 +22,8 @@ const Sidebar = () => {
 
   const renderLinks = [
     ...commonLinks,
-    ...(userRole === "member" ? memberLinks : []),
-    ...(userRole === "admin" ? [...memberLinks, ...adminLinks] : []),
+    ...(mongoUser.role === "member" ? memberLinks : []),
+    ...(mongoUser.role === "admin" ? [...memberLinks, ...adminLinks] : []),
   ];
 
   return (
