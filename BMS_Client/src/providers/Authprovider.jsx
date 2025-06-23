@@ -12,11 +12,16 @@ import {
   signInWithPopup,
   signOut,
   updateProfile,
+  updateEmail,
+  updatePassword,
 } from "firebase/auth";
 
 export const AuthContext = createContext(null);
 
 const auth = getAuth(app);
+const user = auth.currentUser;
+//const newPassword = getASecureRandomPassword();
+
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -52,6 +57,38 @@ const AuthProvider = ({ children }) => {
       photoURL: photo,
     });
   };
+
+const updateUserEmail = () => {
+
+   updateEmail(auth.currentUser, "user@example.com")
+    .then(() => {
+      // Email updated!
+      // ...
+    })
+    .catch((error) => {
+      // An error occurred
+      // ...
+    });
+
+}
+
+
+
+const updateUserPassword = () => {
+    updatePassword(user, newPassword)
+    .then(() => {
+      // Update successful.
+    })
+    .catch((error) => {
+      // An error ocurred
+      // ...
+    });
+
+
+}
+
+ 
+
 
   const logOut = () => {
     setLoading(true);
@@ -109,6 +146,8 @@ const AuthProvider = ({ children }) => {
     setMongoUser,
     createUser,
     updateUserProfile,
+    updateUserEmail,
+    updateUserPassword,
     signIn,
     googleSignIn,
     logOut,

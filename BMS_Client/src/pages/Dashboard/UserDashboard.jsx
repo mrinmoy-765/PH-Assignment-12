@@ -5,7 +5,7 @@ import useAuth from "../../hooks/useAuth";
 import { CiUser } from "react-icons/ci";
 
 const UserDashboard = () => {
-  const { mongoUser, loading } = useAuth();
+  const { user,mongoUser, loading } = useAuth();
 
   if (loading) {
     return (
@@ -27,7 +27,7 @@ const UserDashboard = () => {
           </div>
 
           <h1 className="text-3xl md:text-4xl font-bold text-[#605772] lora">
-            Welcome in, <span className="text-[#7c6f9c]">{mongoUser.name}</span>{" "}
+            Welcome in, <span className="text-[#7c6f9c]">{user.displayName}</span>{" "}
             👋
           </h1>
 
