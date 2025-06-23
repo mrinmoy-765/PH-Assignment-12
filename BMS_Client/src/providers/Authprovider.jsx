@@ -13,15 +13,16 @@ import {
   signOut,
   updateProfile,
   updateEmail,
-  updatePassword
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
 } from "firebase/auth";
 
 export const AuthContext = createContext(null);
 
 const auth = getAuth(app);
-const user = auth.currentUser;
-//const newPassword = getASecureRandomPassword();
 
+//const newPassword = getASecureRandomPassword();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -58,33 +59,42 @@ const AuthProvider = ({ children }) => {
     });
   };
 
+  // Function to update user's email
+  const reauthenticateAndUpdateEmail = async (newEmail, currentPassword) => {
+    const auth = getAuth(); // assuming you're using Firebase Auth
+    const user = auth.currentUser;
 
-// Function to update user's email
-function updateUserEmail(user, newEmail) {
-  return updateEmail(user, newEmail).then(() => {
-    console.log('Email updated successfully');
-  }).catch((error) => {
-    console.error('Error updating email:', error);
-  });
-}
+    // ⚠️ Use the user's current email, not the new one
+    const credential = EmailAuthProvider.credential(
+      user.email,
+      currentPassword
+    );
 
+    // Step 1: Re-authenticate
+    await reauthenticateWithCredential(user, credential);
 
+    // Step 2: Update email
+    await updateEmail(user, newEmail);
+  };
 
-const updateUserPassword = () => {
-    updatePassword(user, newPassword)
-    .then(() => {
-      // Update successful.
-    })
-    .catch((error) => {
-      // An error ocurred
-      // ...
-    });
+  const reauthenticateAndUpdatePassword = async (
+    currentPassword,
+    newPassword
+  ) => {
+    const auth = getAuth();
+    const user = auth.currentUser;
 
+    const credential = EmailAuthProvider.credential(
+      user.email,
+      currentPassword
+    );
 
-}
+    // Reauthenticate
+    await reauthenticateWithCredential(user, credential);
 
- 
-
+    // Update password
+    await updatePassword(user, newPassword);
+  };
 
   const logOut = () => {
     setLoading(true);
@@ -142,8 +152,8 @@ const updateUserPassword = () => {
     setMongoUser,
     createUser,
     updateUserProfile,
-    updateUserEmail,
-    updateUserPassword,
+    reauthenticateAndUpdateEmail,
+    reauthenticateAndUpdatePassword,
     signIn,
     googleSignIn,
     logOut,

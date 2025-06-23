@@ -6,8 +6,8 @@ const UserProfile = () => {
     user,
     mongoUser,
     updateUserProfile,
-    updateUserEmail,
-    updateUserPassword,
+    reauthenticateAndUpdateEmail,
+    reauthenticateAndUpdatePassword,
     loading,
   } = useAuth();
 
@@ -18,7 +18,6 @@ const UserProfile = () => {
       </div>
     );
   }
-
   // Local states for editing
   const [isEditing, setIsEditing] = useState({
     displayName: false,
@@ -27,16 +26,21 @@ const UserProfile = () => {
     password: false,
   });
 
-const [formData, setFormData] = useState({
-  displayName: user.displayName || "",
-  photoURL: user.photoURL || "",
-  email: user.email || "",
-  password: "", // for new password change
-});
-
+  const [formData, setFormData] = useState({
+    displayName: user.displayName || "",
+    photoURL: user.photoURL || "",
+    email: user.email || "",
+    password: "", // for new password change
+    currentPassword: "",
+  });
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const isValidPassword = (password) => {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+    return regex.test(password);
   };
 
   const handleSave = async () => {
@@ -46,11 +50,22 @@ const [formData, setFormData] = useState({
       }
 
       if (isEditing.email) {
-        await updateUserEmail(formData.email);
+        await reauthenticateAndUpdateEmail(
+          formData.email,
+          formData.currentPassword
+        );
       }
 
-      if (isEditing.password && formData.password.length > 6) {
-        await updateUserPassword(formData.password);
+      if (
+        isEditing.password &&
+        formData.password &&
+        formData.currentPassword &&
+        isValidPassword(formData.password)
+      ) {
+        await reauthenticateAndUpdatePassword(
+          formData.currentPassword,
+          formData.password
+        );
       }
 
       alert("Profile updated successfully!");
@@ -122,6 +137,15 @@ const [formData, setFormData] = useState({
                 className="border rounded w-full p-2 mb-2"
                 placeholder="Enter new email"
               />
+              <input
+                type="password"
+                value={formData.currentPassword || ""}
+                onChange={(e) =>
+                  handleInputChange("currentPassword", e.target.value)
+                }
+                className="border rounded w-full p-2 mb-2"
+                placeholder="Enter your current password"
+              />
             </>
           ) : (
             <div className="flex justify-between items-center">
@@ -129,7 +153,10 @@ const [formData, setFormData] = useState({
               <button
                 className="text-sm text-blue-500"
                 onClick={() =>
-                  setIsEditing((prev) => ({ ...prev, email: true }))
+                  setIsEditing((prev) => ({
+                    ...prev,
+                    email: true,
+                  }))
                 }
               >
                 Edit
@@ -167,13 +194,24 @@ const [formData, setFormData] = useState({
         <div className="mb-4 w-full max-w-md">
           <label className="block font-semibold mb-1">New Password:</label>
           {isEditing.password ? (
-            <input
-              type="password"
-              value={formData.password}
-              onChange={(e) => handleInputChange("password", e.target.value)}
-              className="border rounded w-full p-2"
-              placeholder="Enter new password"
-            />
+            <>
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                className="border rounded w-full p-2 mb-2"
+                placeholder="Enter new password"
+              />
+              <input
+                type="password"
+                value={formData.currentPassword || ""}
+                onChange={(e) =>
+                  handleInputChange("currentPassword", e.target.value)
+                }
+                className="border rounded w-full p-2"
+                placeholder="Enter your current password"
+              />
+            </>
           ) : (
             <div className="flex justify-between items-center">
               <span>********</span>
