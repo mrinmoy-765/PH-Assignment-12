@@ -113,6 +113,42 @@ async function run() {
       }
     });
 
+    //update user profile response
+    app.put("/users/update", verifyToken, async (req, res) => {
+      console.log("hitted");
+      try {
+        const { email, name, previousEmail } = req.body;
+
+        if (!email || !name || !previousEmail) {
+          return res.status(400).json({ message: "Missing fields." });
+        }
+
+        const normalizedNewEmail = email.toLowerCase();
+        const normalizedOldEmail = previousEmail.toLowerCase();
+
+        const filter = { email: normalizedOldEmail };
+        const updateDoc = {
+          $set: {
+            name,
+            email: normalizedNewEmail,
+          },
+        };
+
+        const result = await BMS_userCollection.updateOne(filter, updateDoc);
+
+        if (result.modifiedCount === 0) {
+          return res
+            .status(404)
+            .json({ message: "User not found or already up to date." });
+        }
+
+        res.json({ message: "User profile updated in MongoDB." });
+      } catch (error) {
+        console.error("MongoDB update error:", error);
+        res.status(500).json({ message: "Internal server error" });
+      }
+    });
+
     //get apartments
     app.get("/apartments", async (req, res) => {
       try {

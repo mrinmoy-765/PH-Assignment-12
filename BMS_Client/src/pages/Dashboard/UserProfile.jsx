@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import useAuth from "../../hooks/useAuth";
+import axios from "axios";
+import { AiOutlineEdit } from "react-icons/ai";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const UserProfile = () => {
+  const axiosSecure = useAxiosSecure();
+
   const {
     user,
     mongoUser,
@@ -68,6 +73,13 @@ const UserProfile = () => {
         );
       }
 
+      //updating mongodb data
+      await axiosSecure.put("/users/update", {
+        email: formData.email.toLowerCase(),
+        name: formData.displayName,
+        previousEmail: mongoUser.email.toLowerCase(),
+      });
+
       alert("Profile updated successfully!");
       setIsEditing({
         displayName: false,
@@ -119,7 +131,7 @@ const UserProfile = () => {
                   setIsEditing((prev) => ({ ...prev, displayName: true }))
                 }
               >
-                Edit
+                <AiOutlineEdit className="text-2xl" />
               </button>
             </div>
           )}
@@ -159,7 +171,7 @@ const UserProfile = () => {
                   }))
                 }
               >
-                Edit
+                <AiOutlineEdit className="text-2xl" />
               </button>
             </div>
           )}
@@ -184,7 +196,7 @@ const UserProfile = () => {
                   setIsEditing((prev) => ({ ...prev, photoURL: true }))
                 }
               >
-                Edit
+                <AiOutlineEdit className="text-2xl" />
               </button>
             </div>
           )}
@@ -192,7 +204,7 @@ const UserProfile = () => {
 
         {/* Password */}
         <div className="mb-4 w-full max-w-md">
-          <label className="block font-semibold mb-1">New Password:</label>
+          <label className="block font-semibold mb-1">Change Password:</label>
           {isEditing.password ? (
             <>
               <input
@@ -221,7 +233,7 @@ const UserProfile = () => {
                   setIsEditing((prev) => ({ ...prev, password: true }))
                 }
               >
-                Edit
+                <AiOutlineEdit className="text-2xl" />
               </button>
             </div>
           )}
