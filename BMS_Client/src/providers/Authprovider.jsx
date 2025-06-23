@@ -13,7 +13,7 @@ import {
   signOut,
   updateProfile,
   updateEmail,
-  updatePassword,
+  updatePassword
 } from "firebase/auth";
 
 export const AuthContext = createContext(null);
@@ -58,18 +58,14 @@ const AuthProvider = ({ children }) => {
     });
   };
 
-const updateUserEmail = () => {
 
-   updateEmail(auth.currentUser, "user@example.com")
-    .then(() => {
-      // Email updated!
-      // ...
-    })
-    .catch((error) => {
-      // An error occurred
-      // ...
-    });
-
+// Function to update user's email
+function updateUserEmail(user, newEmail) {
+  return updateEmail(user, newEmail).then(() => {
+    console.log('Email updated successfully');
+  }).catch((error) => {
+    console.error('Error updating email:', error);
+  });
 }
 
 
