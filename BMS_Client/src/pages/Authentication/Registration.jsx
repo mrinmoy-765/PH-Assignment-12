@@ -32,6 +32,7 @@ const Registration = () => {
         updateUserProfile(data.name, data.photoURL)
           .then(() => {
             const userInfo = {
+              uid: loggedUser.uid,
               name: data.name,
               email: data.email,
             };

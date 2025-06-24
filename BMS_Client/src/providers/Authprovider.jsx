@@ -108,14 +108,15 @@ const AuthProvider = ({ children }) => {
       setUser(currentUser);
 
       if (currentUser) {
-        const userInfo = { email: currentUser.email };
+        const uid = currentUser.uid;
+        const userInfo = { uid: currentUser.uid };
 
         axiosPublic
           .post("/jwt", userInfo, { withCredentials: true })
           .then(() => {
             // After JWT is set, fetch the MongoDB user
             return axios.get("http://localhost:5000/users", {
-              params: { email: currentUser.email },
+             params: { uid },
               withCredentials: true,
             });
           })

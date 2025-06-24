@@ -84,12 +84,7 @@ async function run() {
     //create User
     app.post("/users", async (req, res) => {
       const user = req.body;
-      const query = { email: user.email };
-      const existingUser = await userCollection.findOne(query);
-      if (existingUser) {
-        return res.send({ message: "user already exists", insertedId: null });
-      }
-      const result = await userCollection.insertOne(user);
+      const result = await BMS_userCollection.insertOne(user);
       res.send(result);
     });
 
@@ -129,7 +124,7 @@ async function run() {
         const normalizedOldEmail = previousEmail.toLowerCase();
 
         const filter = { email: normalizedOldEmail };
-        
+
         const updateDoc = { $set: {} };
 
         if (name) updateDoc.$set.name = name;
