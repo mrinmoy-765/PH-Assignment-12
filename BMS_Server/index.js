@@ -119,6 +119,8 @@ async function run() {
       try {
         const { email, name, previousEmail } = req.body;
 
+        console.log(email, name, previousEmail);
+
         if (!email || !name || !previousEmail) {
           return res.status(400).json({ message: "Missing fields." });
         }
@@ -127,12 +129,14 @@ async function run() {
         const normalizedOldEmail = previousEmail.toLowerCase();
 
         const filter = { email: normalizedOldEmail };
-        const updateDoc = {
-          $set: {
-            name,
-            email: normalizedNewEmail,
-          },
-        };
+        
+        const updateDoc = { $set: {} };
+
+        if (name) updateDoc.$set.name = name;
+
+        if (email && email !== previousEmail) {
+          updateDoc.$set.email = email;
+        }
 
         const result = await BMS_userCollection.updateOne(filter, updateDoc);
 

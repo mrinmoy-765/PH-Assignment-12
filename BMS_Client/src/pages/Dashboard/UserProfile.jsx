@@ -77,7 +77,7 @@ const UserProfile = () => {
       await axiosSecure.put("/users/update", {
         email: formData.email.toLowerCase(),
         name: formData.displayName,
-        previousEmail: mongoUser.email.toLowerCase(),
+        previousEmail: mongoUser?.email.toLowerCase(),
       });
 
       alert("Profile updated successfully!");
@@ -238,6 +238,9 @@ const UserProfile = () => {
             </div>
           )}
         </div>
+    <div>
+      {mongoUser?.role}
+    </div>
 
         <button
           onClick={handleSave}

@@ -122,7 +122,6 @@ const AuthProvider = ({ children }) => {
           .then((res) => {
             // Set the MongoDB user data
             setMongoUser(res.data);
-            console.log(mongoUser.role);
           })
           .catch((error) => {
             console.error("Error fetching user data:", error);
