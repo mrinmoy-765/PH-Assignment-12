@@ -10,7 +10,7 @@ const DashboardLayout = () => {
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
   return (
-    <div className="min-h-screen h-screen w-full bg-[#DBD8E3] py-4 lg:py-12 px-22">
+    <div className="min-h-screen h-screen w-full bg-[#DBD8E3] py-4 lg:py-12 px-8 lg:px-22">
       {" "}
       {/* Adjusted padding */}
       {/* 1. This container is the positioning context because it has `relative` */}
