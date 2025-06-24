@@ -88,15 +88,15 @@ async function run() {
       res.send(result);
     });
 
-    //get user by email retrived from firebase
+    //get user by firebase id
     app.get("/users", verifyToken, async (req, res) => {
       try {
-        const email = req.query.email;
-        if (!email)
-          return res.status(400).send({ message: "Email is required" });
+        const uid = req.query.uid;
+        if (!uid)
+          return res.status(400).send({ message: "uid is required" });
 
         const user = await BMS_userCollection.findOne({
-          email: { $regex: `^${email}$`, $options: "i" },
+          uid
         });
 
         if (!user) return res.status(404).send({ message: "User not found" });
