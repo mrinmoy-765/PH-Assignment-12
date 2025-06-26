@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
-import axios from "axios";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { toast } from "react-toastify";
 
 const UserProfile = () => {
   const axiosSecure = useAxiosSecure();
-
+  const [mongoNeedsUpdate, setMongoNeedsUpdate] = useState(false);
   const {
     user,
     mongoUser,
@@ -32,10 +32,67 @@ const UserProfile = () => {
     currentPassword: "",
   });
 
+  // Update formData when user loads
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        displayName: user?.displayName || "",
+        photoURL: user?.photoURL || "",
+        email: user?.email || "",
+        password: "",
+        currentPassword: "",
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const updateMongo = async () => {
+      if (!mongoNeedsUpdate) return;
+
+      try {
+        await axiosSecure.put("/users/update", {
+          email: formData.email.toLowerCase(),
+          name: formData.displayName,
+          uid: mongoUser?.uid,
+        });
+        toast.success("Profile information updated in database!");
+      } catch (error) {
+        console.error("MongoDB update failed:", error);
+        toast.error("Failed to update profile in database");
+      } finally {
+        setMongoNeedsUpdate(false);
+      }
+    };
+
+    updateMongo();
+  }, [
+    mongoNeedsUpdate,
+    formData.email,
+    formData.displayName,
+    mongoUser?.email,
+    axiosSecure,
+  ]);
+
+  // Add this useEffect to debug user loading
+  useEffect(() => {
+    console.log("user from useAuth:", user);
+  }, [user]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <span className="loading loading-spinner text-accent"></span>
+      </div>
+    );
+  }
+
+  // Add this check to handle missing user
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <span className="text-lg text-gray-500">
+          No user data found. Please ensure you are logged in and Firebase Auth is configured correctly.
+        </span>
       </div>
     );
   }
@@ -53,35 +110,60 @@ const UserProfile = () => {
     try {
       if (isEditing.displayName || isEditing.photoURL) {
         await updateUserProfile(formData.displayName, formData.photoURL);
+        if(isEditing.displayName) {
+          setMongoNeedsUpdate(true);
+        }
+        toast.success("Profile information updated successfully!");
       }
 
       if (isEditing.email) {
-        await reauthenticateAndUpdateEmail(
-          formData.email,
-          formData.currentPassword
-        );
+        if (!formData.currentPassword) {
+          toast.error("Current password is required to update email");
+          return;
+        }
+        try {
+          await reauthenticateAndUpdateEmail(
+            formData.email,
+            formData.currentPassword
+          );
+          setMongoNeedsUpdate(true);
+          toast.success("Email updated successfully!");
+        } catch (error) {
+          toast.error(error.message || "Failed to update email");
+          return;
+        }
       }
 
-      if (
-        isEditing.password &&
-        formData.password &&
-        formData.currentPassword &&
-        isValidPassword(formData.password)
-      ) {
-        await reauthenticateAndUpdatePassword(
-          formData.currentPassword,
-          formData.password
-        );
+      if (isEditing.password) {
+        if (!formData.currentPassword) {
+          toast.error("Current password is required");
+          return;
+        }
+        if (!formData.password) {
+          toast.error("New password is required");
+          return;
+        }
+        if (!isValidPassword(formData.password)) {
+          toast.error(
+            "Password must contain at least 6 characters, one uppercase and one lowercase letter"
+          );
+          return;
+        }
+
+        try {
+          await reauthenticateAndUpdatePassword(
+            formData.currentPassword,
+            formData.password
+          );
+          toast.success("Password updated successfully!");
+          setFormData((prev) => ({ ...prev, password: "", currentPassword: "" }));
+        } catch (error) {
+          toast.error(error.message || "Failed to update password");
+          return;
+        }
       }
 
-      //updating mongodb data
-      await axiosSecure.put("/users/update", {
-        email: formData.email.toLowerCase(),
-        name: formData.displayName,
-        previousEmail: mongoUser?.email.toLowerCase(),
-      });
-
-      alert("Profile updated successfully!");
+      // Reset editing states
       setIsEditing({
         displayName: false,
         photoURL: false,
@@ -90,7 +172,7 @@ const UserProfile = () => {
       });
     } catch (error) {
       console.error(error);
-      alert("Error updating profile");
+      toast.error("An error occurred while updating profile");
     }
   };
 
@@ -114,13 +196,17 @@ const UserProfile = () => {
             </div>
           )}
           <div className="absolute ml-27 -mt-12">
-            <div className="badge bg-[#5C5470] text-white work-sans">{mongoUser?.role}</div>
+            <div className="badge bg-[#5C5470] text-white work-sans">
+              {mongoUser?.role}
+            </div>
           </div>
         </div>
 
         {/* Display Name */}
         <div className="mb-4 w-full max-w-md">
-          <label className="block font-semibold mb-1 text-[#534a65] lora">Display Name:</label>
+          <label className="block font-semibold mb-1 text-[#534a65] lora">
+            Display Name:
+          </label>
           {isEditing.displayName ? (
             <input
               type="text"
@@ -130,7 +216,9 @@ const UserProfile = () => {
             />
           ) : (
             <div className="flex justify-between items-center">
-              <span className="text-[#666075f9] work-sans">{user.displayName || "No display name"}</span>
+              <span className="text-[#666075f9] work-sans">
+                {user.displayName || "No display name"}
+              </span>
               <button
                 className="text-sm text-blue-500"
                 onClick={() =>
@@ -145,7 +233,9 @@ const UserProfile = () => {
 
         {/* Email */}
         <div className="mb-4 w-full max-w-md">
-          <label className="block font-semibold mb-1 text-[#534a65]  lora">Email:</label>
+          <label className="block font-semibold mb-1 text-[#534a65]  lora">
+            Email:
+          </label>
           {isEditing.email ? (
             <>
               <input
@@ -167,7 +257,9 @@ const UserProfile = () => {
             </>
           ) : (
             <div className="flex justify-between items-center">
-              <span>{user.email || "No email provided"}</span>
+              <span className="text-blue-400 work-sans">
+                {user.email || "No email provided"}
+              </span>
               <button
                 className="text-sm text-blue-500"
                 onClick={() =>
@@ -185,7 +277,9 @@ const UserProfile = () => {
 
         {/* URL */}
         <div className="mb-4 w-full max-w-md">
-          <label className="block font-semibold mb-1 text-[#534a65]  lora">Image url:</label>
+          <label className="block font-semibold mb-1 text-[#534a65]  lora">
+            Image url:
+          </label>
           {isEditing.photoURL ? (
             <input
               type="text"
@@ -195,7 +289,9 @@ const UserProfile = () => {
             />
           ) : (
             <div className="flex justify-between items-center">
-              <span>{user.photoURL || "No url provided"}</span>
+              <span className="text-[#666075f9] work-sans">
+                {user.photoURL || "No url provided"}
+              </span>
               <button
                 className="text-sm text-blue-500"
                 onClick={() =>
@@ -210,7 +306,9 @@ const UserProfile = () => {
 
         {/* Password */}
         <div className="mb-4 w-full max-w-md">
-          <label className="block font-semibold mb-1 text-[#534a65]  lora">Change Password:</label>
+          <label className="block font-semibold mb-1 text-[#534a65]  lora">
+            Change Password:
+          </label>
           {isEditing.password ? (
             <>
               <input
@@ -232,7 +330,7 @@ const UserProfile = () => {
             </>
           ) : (
             <div className="flex justify-between items-center">
-              <span>********</span>
+              <span className="text-[#666075f9]">********</span>
               <button
                 className="text-sm text-blue-500"
                 onClick={() =>

@@ -92,11 +92,10 @@ async function run() {
     app.get("/users", verifyToken, async (req, res) => {
       try {
         const uid = req.query.uid;
-        if (!uid)
-          return res.status(400).send({ message: "uid is required" });
+        if (!uid) return res.status(400).send({ message: "uid is required" });
 
         const user = await BMS_userCollection.findOne({
-          uid
+          uid,
         });
 
         if (!user) return res.status(404).send({ message: "User not found" });
@@ -110,35 +109,21 @@ async function run() {
 
     //update user profile response
     app.put("/users/update", verifyToken, async (req, res) => {
-      console.log("hitted");
       try {
-        const { email, name, previousEmail } = req.body;
+        const { email, name, uid } = req.body;
 
-        console.log(email, name, previousEmail);
-
-        if (!email || !name || !previousEmail) {
+        if (!email || !name || !uid) {
           return res.status(400).json({ message: "Missing fields." });
         }
-
-        const normalizedNewEmail = email.toLowerCase();
-        const normalizedOldEmail = previousEmail.toLowerCase();
-
-        const filter = { email: normalizedOldEmail };
 
         const updateDoc = { $set: {} };
 
         if (name) updateDoc.$set.name = name;
+        if (email) updateDoc.$set.email = email;
 
-        if (email && email !== previousEmail) {
-          updateDoc.$set.email = email;
-        }
-
-        const result = await BMS_userCollection.updateOne(filter, updateDoc);
-
-        if (result.modifiedCount === 0) {
-          return res
-            .status(404)
-            .json({ message: "User not found or already up to date." });
+        const result = await BMS_userCollection.updateOne({ uid }, updateDoc);
+        if (result.matchedCount === 0) {
+          return res.status(404).json({ message: "User not found." });
         }
 
         res.json({ message: "User profile updated in MongoDB." });
