@@ -1,14 +1,32 @@
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 // Import all the icons you'll need
 import { AiTwotoneProfile } from "react-icons/ai";
 import { MdCampaign, MdOutlineManageAccounts, MdPayment } from "react-icons/md";
 import { GrAnnounce } from "react-icons/gr";
 import { FaFileSignature } from "react-icons/fa";
+import { MdHome } from "react-icons/md";
+import { MdApartment } from "react-icons/md";
+import { MdOutlineRateReview } from "react-icons/md";
+import { TbLogout2 } from "react-icons/tb";
 
 const Sidebar = () => {
-  const { mongoUser, loading } = useAuth();
+  const { mongoUser, loading, logOut } = useAuth();
+  const navigate = useNavigate();
+
+  //logout handler
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      Swal.fire("Logged out!", "", "success");
+      navigate("/");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
 
   if (loading) {
     // A simple loading state while waiting for the user data
@@ -29,14 +47,34 @@ const Sidebar = () => {
   // Define links with icons for all roles for a consistent UI
   const commonLinks = [
     {
+      to: "/",
+      icon: <MdHome className="text-xl" />,
+      label: "Home",
+    },
+    {
       to: "/dashboard/userProfile",
-      icon: <AiTwotoneProfile className="text-xl" />, // text-xl is a good size
+      icon: <AiTwotoneProfile className="text-xl" />,
       label: "Profile",
+    },
+    {
+      to: "/apartment",
+      icon: <MdApartment className="text-xl" />,
+      label: "Apartments",
     },
     {
       to: "/dashboard/announcements",
       icon: <MdCampaign className="text-xl" />,
       label: "Announcements",
+    },
+    {
+      to: "/dashboard/announcements",
+      icon: <MdOutlineRateReview className="text-xl" />,
+      label: "Leave a review",
+    },
+    {
+      icon: <TbLogout2 className="text-xl" />,
+      label: "Log out",
+      onClick: handleLogout,
     },
   ];
 
@@ -77,22 +115,25 @@ const Sidebar = () => {
     <div className="w-64 bg-[#5C5470] text-white min-h-screen p-4">
       <h2 className="text-2xl font-bold mb-8 text-center">Dashboard</h2>
       <ul className="space-y-2">
-        {renderLinks.map((link) => (
-          <li key={link.to}>
-            {/* 
-              FIXES APPLIED HERE:
-              1. Changed <Link> to a flex container to hold the icon and label.
-              2. Added `items-center` to vertically align them.
-              3. Added `gap-3` to create space between them.
-              4. Rendered `{link.icon}` before the label.
-            */}
-            <Link
-              to={link.to}
-              className="flex items-center gap-3 p-2 rounded-md hover:bg-[#353041] transition-colors duration-200"
-            >
-              {link.icon}
-              <span>{link.label}</span>
-            </Link>
+        {renderLinks.map((link, index) => (
+          <li key={index}>
+            {link.onClick ? (
+              <button
+                onClick={link.onClick}
+                className="flex items-center gap-3 p-2 w-full text-left rounded-md hover:bg-[#353041] transition-colors duration-200"
+              >
+                {link.icon}
+                <span>{link.label}</span>
+              </button>
+            ) : (
+              <Link
+                to={link.to}
+                className="flex items-center gap-3 p-2 rounded-md hover:bg-[#353041] transition-colors duration-200"
+              >
+                {link.icon}
+                <span>{link.label}</span>
+              </Link>
+            )}
           </li>
         ))}
       </ul>

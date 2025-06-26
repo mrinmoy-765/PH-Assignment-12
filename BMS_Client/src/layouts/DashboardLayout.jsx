@@ -26,7 +26,7 @@ const DashboardLayout = () => {
 
         {/* 2. Button is now a direct child of the relative container */}
         <button
-          className="btn btn-ghost btn-square absolute top-4 right-4 z-20" // Positioned here!
+          className="btn btn-ghost btn-square absolute top-4 right-4 z-20 text-2xl" // Positioned here!
           onClick={toggleDrawer}
         >
           {isDrawerOpen ? <RiCloseLargeLine /> : <RxHamburgerMenu />}
