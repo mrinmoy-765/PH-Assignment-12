@@ -7,6 +7,7 @@ import FetchApartment from "../pages/Apartment/FetchApartment";
 import DashboardLayout from "../layouts/DashboardLayout";
 import UserDashboard from "../pages/Dashboard/UserDashboard";
 import UserProfile from "../pages/Dashboard/UserProfile";
+import Review from "../pages/Dashboard/Review";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/userProfile",
         element: <UserProfile></UserProfile>,
+      },
+      {
+        path: "/dashboard/review",
+        element: <Review></Review>,
       },
     ],
   },

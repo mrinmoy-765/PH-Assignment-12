@@ -102,4 +102,7 @@
     border-radius: 6px;
 }
 
-   
+    textarea {
+      height: 175px; /* Set your desired fixed height */
+      resize: none; /* Optional: Prevent user resizing */
+    }

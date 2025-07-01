@@ -67,7 +67,7 @@ const Sidebar = () => {
       label: "Announcements",
     },
     {
-      to: "/dashboard/announcements",
+      to: "/dashboard/review",
       icon: <MdOutlineRateReview className="text-xl" />,
       label: "Leave a review",
     },

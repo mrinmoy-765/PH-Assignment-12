@@ -40,6 +40,7 @@ async function run() {
     const BMS_userCollection = client.db("BMS").collection("BmsUsers");
     const apartmentsCollection = client.db("BMS").collection("Apartments");
     const agreementCollection = client.db("BMS").collection("Agreements");
+    const reviewCollection = client .db("BMS").collection("Reviews");
 
     //middleware
     const verifyToken = (req, res, next) => {
@@ -186,6 +187,13 @@ async function run() {
     app.post("/apartments", async (req, res) => {
       const newApartment = req.body;
       const result = await apartmentsCollection.insertOne(newApartment);
+      res.send(result);
+    });
+
+    // write a review
+    app.post("/reviews", async (req, res) => {
+      const newReview = req.body;
+      const result = await reviewCollection.insertOne(newReview);
       res.send(result);
     });
 
