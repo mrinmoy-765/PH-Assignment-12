@@ -40,7 +40,7 @@ async function run() {
     const BMS_userCollection = client.db("BMS").collection("BmsUsers");
     const apartmentsCollection = client.db("BMS").collection("Apartments");
     const agreementCollection = client.db("BMS").collection("Agreements");
-    const reviewCollection = client .db("BMS").collection("Reviews");
+    const reviewCollection = client.db("BMS").collection("Reviews");
 
     //middleware
     const verifyToken = (req, res, next) => {
@@ -191,10 +191,25 @@ async function run() {
     });
 
     // write a review
-    app.post("/reviews", async (req, res) => {
+    app.post("/reviews", verifyToken, async (req, res) => {
       const newReview = req.body;
       const result = await reviewCollection.insertOne(newReview);
       res.send(result);
+    });
+
+    // GET /reviews/latest
+    app.get("/getReview", async (req, res) => {
+      try {
+        const latestReviews = await reviewCollection
+          .find()
+          .sort({ date: -1 })
+          .limit(6)
+          .toArray(); 
+        res.status(200).json(latestReviews);
+      } catch (error) {
+        console.error("Failed to fetch reviews:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+      }
     });
 
     //Make an Agreement
