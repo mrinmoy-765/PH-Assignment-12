@@ -272,6 +272,20 @@ async function run() {
       }
     });
 
+
+    //get members
+    app.get("/people", async(req,res) =>{
+      try{
+         const people = await BMS_userCollection
+         .find({role : "user"})
+         .toArray();
+         res.json(people)
+      }catch(err){
+          console.error("Error fetching data:",err);
+          res.status(500).json({error:"Internal Server Error"});
+      }
+    });
+
     // Send a ping to confirm a successful connection
     //  await client.db("admin").command({ ping: 1 });
     console.log(

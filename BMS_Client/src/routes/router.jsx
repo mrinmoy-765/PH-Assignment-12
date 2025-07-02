@@ -8,6 +8,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import UserProfile from "../pages/Dashboard/UserProfile";
 import Review from "../pages/Dashboard/Review";
 import DashboardRouter from "../components/DashboardRouter";
+import ManageUsers from "../pages/Dashboard/ManageMembers";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/review",
         element: <Review />,
+      },
+      {
+        path: "/dashboard/manage-users",
+        element: <ManageUsers />,
       },
     ],
   },

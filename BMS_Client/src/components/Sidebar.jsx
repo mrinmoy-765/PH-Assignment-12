@@ -12,6 +12,7 @@ import { MdHome } from "react-icons/md";
 import { MdApartment } from "react-icons/md";
 import { MdOutlineRateReview } from "react-icons/md";
 import { TbLogout2 } from "react-icons/tb";
+import { RiProfileFill } from "react-icons/ri";
 
 const Sidebar = () => {
   const { mongoUser, loading, logOut } = useAuth();
@@ -53,7 +54,7 @@ const Sidebar = () => {
     },
     {
       to: "/dashboard/userProfile",
-      icon: <AiTwotoneProfile className="text-xl" />,
+      icon: <RiProfileFill className="text-xl" />,
       label: "Profile",
     },
     {
@@ -88,14 +89,24 @@ const Sidebar = () => {
       to: "/dashboard/payment",
       icon: <MdPayment className="text-xl" />,
       label: "Make Payment",
-    },
+    },    
   ];
 
   const adminLinks = [
     {
+      to: "/",
+      icon: <MdHome className="text-xl" />,
+      label: "Home",
+    },
+        {
+      to: "/dashboard/userProfile",
+      icon: <RiProfileFill className="text-xl" />,
+      label: "Profile",
+    },
+    {
       to: "/dashboard/manage-users",
       icon: <MdOutlineManageAccounts className="text-xl" />,
-      label: "Manage Users",
+      label: "Manage Members",
     },
     {
       to: "/dashboard/post-announcement",

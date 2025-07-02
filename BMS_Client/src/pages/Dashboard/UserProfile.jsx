@@ -53,6 +53,7 @@ const UserProfile = () => {
         await axiosSecure.put("/users/update", {
           email: formData.email.toLowerCase(),
           name: formData.displayName,
+          image: formData.photoURL,
           uid: mongoUser?.uid,
         });
         toast.success("Profile information updated in database!");
