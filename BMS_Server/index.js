@@ -272,17 +272,27 @@ async function run() {
       }
     });
 
-
     //get members
-    app.get("/people", async(req,res) =>{
-      try{
-         const people = await BMS_userCollection
-         .find({role : "user"})
-         .toArray();
-         res.json(people)
-      }catch(err){
-          console.error("Error fetching data:",err);
-          res.status(500).json({error:"Internal Server Error"});
+    app.get("/people", async (req, res) => {
+      try {
+        const { role = "member", search = "" } = req.query;
+
+        // build base filter with role
+        const query = { role };
+
+        // if search keyword is provided
+        if (search) {
+          query.$or = [
+            { name: { $regex: search, $options: "i" } },
+            { email: { $regex: search, $options: "i" } },
+          ];
+        }
+
+        const people = await BMS_userCollection.find(query).toArray();
+        res.json(people);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        res.status(500).json({ error: "Internal Server Error" });
       }
     });
 

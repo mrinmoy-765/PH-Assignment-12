@@ -7,11 +7,18 @@ import UserDashboard from "../pages/Dashboard/UserDashboard";
 import AdminDashboard from "../pages/Dashboard/AdminDashboard";
 
 const DashboardRouter = () => {
-    const {  mongoUser, loading } = useAuth();
+  const { mongoUser, loading } = useAuth();
 
-  if (loading) return ;
+  if (loading || !mongoUser || !mongoUser.role) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <span className="loading loading-spinner text-accent"></span>
+        <span className="text-cyan-500 text-lg">Refresh Page...</span>
+      </div>
+    );
+  }
 
-  switch (mongoUser.role) {
+  switch (mongoUser?.role) {
     case "user":
       return <UserDashboard />;
     case "member":

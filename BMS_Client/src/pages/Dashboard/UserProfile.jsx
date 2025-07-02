@@ -70,7 +70,8 @@ const UserProfile = () => {
     mongoNeedsUpdate,
     formData.email,
     formData.displayName,
-    mongoUser?.email,
+    formData.photoURL,
+    mongoUser?.uid,
     axiosSecure,
   ]);
 
@@ -92,7 +93,8 @@ const UserProfile = () => {
     return (
       <div className="flex items-center justify-center h-screen">
         <span className="text-lg text-gray-500">
-          No user data found. Please ensure you are logged in and Firebase Auth is configured correctly.
+          No user data found. Please ensure you are logged in and Firebase Auth
+          is configured correctly.
         </span>
       </div>
     );
@@ -111,9 +113,7 @@ const UserProfile = () => {
     try {
       if (isEditing.displayName || isEditing.photoURL) {
         await updateUserProfile(formData.displayName, formData.photoURL);
-        if(isEditing.displayName) {
-          setMongoNeedsUpdate(true);
-        }
+        setMongoNeedsUpdate(true);
         toast.success("Profile information updated successfully!");
       }
 
@@ -157,7 +157,11 @@ const UserProfile = () => {
             formData.password
           );
           toast.success("Password updated successfully!");
-          setFormData((prev) => ({ ...prev, password: "", currentPassword: "" }));
+          setFormData((prev) => ({
+            ...prev,
+            password: "",
+            currentPassword: "",
+          }));
         } catch (error) {
           toast.error(error.message || "Failed to update password");
           return;
@@ -290,9 +294,15 @@ const UserProfile = () => {
             />
           ) : (
             <div className="flex justify-between items-center">
-              <span className="text-[#666075f9] work-sans">
-                {user.photoURL || "No url provided"}
+              <span className="text-[#666075f9] work-sans w-2xs">
+                {user.photoURL
+                  ? user.photoURL
+                      .replace(/^https?:\/\//, "")
+                      .split("?")[0]
+                      .slice(0, 30) + "..."
+                  : "No URL provided"}
               </span>
+
               <button
                 className="text-sm text-blue-500"
                 onClick={() =>
