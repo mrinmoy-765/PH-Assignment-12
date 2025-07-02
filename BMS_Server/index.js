@@ -204,7 +204,7 @@ async function run() {
           .find()
           .sort({ date: -1 })
           .limit(6)
-          .toArray(); 
+          .toArray();
         res.status(200).json(latestReviews);
       } catch (error) {
         console.error("Failed to fetch reviews:", error);
@@ -238,6 +238,37 @@ async function run() {
       } catch (error) {
         console.error("Error inserting agreement:", error);
         res.status(500).send({ message: "Server error" });
+      }
+    });
+
+    //Admin Information Part----------------------------------------------------------------------------------------------------------
+
+    app.get("/dashboard/admin-stats", verifyToken, async (req, res) => {
+      try {
+        const totalRooms = await apartmentsCollection.countDocuments();
+        const availableRooms = await apartmentsCollection.countDocuments({
+          is_available: true,
+        });
+        const unavailableRooms = await apartmentsCollection.countDocuments({
+          is_available: false,
+        });
+
+        const totalUsers = await BMS_userCollection.countDocuments({
+          role: "user",
+        });
+        const memberUsers = await BMS_userCollection.countDocuments({
+          role: "member",
+        });
+
+        res.send({
+          totalRooms,
+          availableRooms,
+          unavailableRooms,
+          totalUsers,
+          memberUsers,
+        });
+      } catch (error) {
+        res.status(500).send({ error: "Failed to fetch dashboard stats" });
       }
     });
 

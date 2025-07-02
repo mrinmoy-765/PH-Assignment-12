@@ -22,7 +22,7 @@ const Reviews = () => {
         What Our Tenants Say
       </h1>
       <p className="text-center mt-3 text-lg work-sans text-[#9282a6]">
-        Discover how RentNest has transformed the rental experience for our
+        Discover how Heaven Craft has transformed the rental experience for our
         valued tenants.
       </p>
 

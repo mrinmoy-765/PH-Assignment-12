@@ -5,9 +5,9 @@ import Registration from "../pages/Authentication/Registration";
 import LogIn from "../pages/Authentication/Login";
 import FetchApartment from "../pages/Apartment/FetchApartment";
 import DashboardLayout from "../layouts/DashboardLayout";
-import UserDashboard from "../pages/Dashboard/UserDashboard";
 import UserProfile from "../pages/Dashboard/UserProfile";
 import Review from "../pages/Dashboard/Review";
+import DashboardRouter from "../components/DashboardRouter";
 
 const router = createBrowserRouter([
   {
@@ -26,19 +26,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout></DashboardLayout>,
+    element: <DashboardLayout />, // wrapper layout with sidebar
     children: [
       {
         path: "/dashboard",
-        element: <UserDashboard></UserDashboard>,
+        element: <DashboardRouter />, // dynamic component based on role
       },
       {
         path: "/dashboard/userProfile",
-        element: <UserProfile></UserProfile>,
+        element: <UserProfile />,
       },
       {
         path: "/dashboard/review",
-        element: <Review></Review>,
+        element: <Review />,
       },
     ],
   },

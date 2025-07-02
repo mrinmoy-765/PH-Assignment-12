@@ -45,7 +45,7 @@ const Sidebar = () => {
   }
 
   // Define links with icons for all roles for a consistent UI
-  const commonLinks = [
+  const userLinks = [
     {
       to: "/",
       icon: <MdHome className="text-xl" />,
@@ -104,12 +104,16 @@ const Sidebar = () => {
     },
   ];
 
-  // Using optional chaining `mongoUser?.role` to prevent errors if mongoUser is null
-  const renderLinks = [
-    ...commonLinks,
-    ...(mongoUser?.role === "member" ? memberLinks : []),
-    ...(mongoUser?.role === "admin" ? [...memberLinks, ...adminLinks] : []),
-  ];
+
+  const renderLinks =
+  mongoUser?.role === "user"
+    ? userLinks
+    : mongoUser?.role === "member"
+    ? memberLinks
+    : mongoUser?.role === "admin"
+    ? adminLinks
+    : [];
+
 
   return (
     <div className="w-64 bg-[#5C5470] text-white min-h-screen p-4">
