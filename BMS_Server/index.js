@@ -296,6 +296,24 @@ async function run() {
       }
     });
 
+    //remove user
+    app.patch("/people/:id", async (req, res) => {
+      const userId = req.params.id;
+      const { role } = req.body;
+
+      try {
+        const result = await BMS_userCollection.updateOne(
+          { _id: new ObjectId(userId) },
+          { $set: { role } }
+        );
+
+        res.json(result);
+      } catch (err) {
+        console.error("Error updating role:", err);
+        res.status(500).json({ error: "Failed to update user role" });
+      }
+    });
+
     // Send a ping to confirm a successful connection
     //  await client.db("admin").command({ ping: 1 });
     console.log(

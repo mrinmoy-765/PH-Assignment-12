@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import MemberTable from "./MemberTable";
 import UserTable from "./UserTable";
-import Pagination from "../../components/Pagination"; // adjust path
+import Pagination from "../../components/Pagination";
+import Swal from "sweetalert2";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -27,7 +28,7 @@ const ManageMembers = () => {
 
   const role = isUser ? "user" : "member";
 
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["people", role, debouncedSearch],
     queryFn: async () => {
       const res = await axiosSecure.get(
@@ -45,6 +46,33 @@ const ManageMembers = () => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const handleRemove = async (id) => {
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "This member will be removed and turned into a user.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, remove",
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        const res = await axiosSecure.patch(`/people/${id}`, {
+          role: "user",
+        });
+
+        if (res.data.modifiedCount > 0) {
+          Swal.fire("Removed!", "User role updated.", "success");
+          // refetch members
+          refetch();
+        }
+      } catch (err) {
+        Swal.fire("Error!", "Something went wrong.", "error");
+        console.error(err);
+      }
+    }
   };
 
   return (
@@ -102,7 +130,7 @@ const ManageMembers = () => {
         (isUser ? (
           <UserTable data={paginatedData} />
         ) : (
-          <MemberTable data={paginatedData} />
+          <MemberTable data={paginatedData} onRemove={handleRemove} />
         ))}
 
       {/* Pagination */}
