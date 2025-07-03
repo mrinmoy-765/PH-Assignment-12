@@ -11,6 +11,8 @@ import DashboardRouter from "../components/DashboardRouter";
 import ManageUsers from "../pages/Dashboard/ManageMembers";
 import PostAnnouncement from "../pages/Dashboard/PostAnnouncement";
 import GetAnnouncements from "../pages/Dashboard/GetAnnouncements";
+import ManageCoupons from "../pages/Dashboard/ManageCoupons";
+
 
 const router = createBrowserRouter([
   {
@@ -53,7 +55,11 @@ const router = createBrowserRouter([
       },
       {
         path:"/dashboard/get-announcement",
-        element: <GetAnnouncements/>
+        element: <GetAnnouncements/>,
+      },
+      {
+        path: "/dashboard/manage-coupons",
+        element: <ManageCoupons/>,
       }
     ],
   },

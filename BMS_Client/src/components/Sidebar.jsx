@@ -13,6 +13,7 @@ import { MdApartment } from "react-icons/md";
 import { MdOutlineRateReview } from "react-icons/md";
 import { TbLogout2 } from "react-icons/tb";
 import { RiProfileFill } from "react-icons/ri";
+import { RiCoupon3Fill } from "react-icons/ri";
 
 const Sidebar = () => {
   const { mongoUser, loading, logOut } = useAuth();
@@ -122,6 +123,11 @@ const Sidebar = () => {
       to: "/dashboard/get-announcement",
       icon: <MdCampaign className="text-xl" />,
       label: "Announcements List",
+    },
+    {
+      to: "/dashboard/manage-coupons",
+      icon: <RiCoupon3Fill className="text-xl" />,
+      label: "Manage Coupons",
     },
     {
       icon: <TbLogout2 className="text-xl" />,

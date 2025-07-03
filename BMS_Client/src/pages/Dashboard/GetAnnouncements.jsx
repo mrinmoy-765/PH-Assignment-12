@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import { format } from "date-fns"; // Optional for formatting
+import { format } from "date-fns"; 
 
 const GetAnnouncements = () => {
   const axiosSecure = useAxiosSecure();
@@ -10,7 +10,7 @@ const GetAnnouncements = () => {
     queryKey: ["announcement"],
     queryFn: async () => {
       const res = await axiosSecure.get(`/getannoucements`);
-      return res.data; // array of announcements
+      return res.data; 
     },
   });
 
