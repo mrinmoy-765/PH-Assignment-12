@@ -41,6 +41,7 @@ async function run() {
     const apartmentsCollection = client.db("BMS").collection("Apartments");
     const agreementCollection = client.db("BMS").collection("Agreements");
     const reviewCollection = client.db("BMS").collection("Reviews");
+    const announcementCollection = client.db("BMS").collection("Announcements");
 
     //middleware
     const verifyToken = (req, res, next) => {
@@ -312,6 +313,15 @@ async function run() {
         console.error("Error updating role:", err);
         res.status(500).json({ error: "Failed to update user role" });
       }
+    });
+
+    //post announcement
+    app.post("/announcements", async (req, res) => {
+      console.log("hit announce");
+      const newAnnouncement = req.body;
+      const result = await announcementCollection
+        .insertOne(newAnnouncement);
+      res.send(result); // result.insertedId will be available
     });
 
     // Send a ping to confirm a successful connection

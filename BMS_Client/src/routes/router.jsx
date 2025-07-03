@@ -9,6 +9,7 @@ import UserProfile from "../pages/Dashboard/UserProfile";
 import Review from "../pages/Dashboard/Review";
 import DashboardRouter from "../components/DashboardRouter";
 import ManageUsers from "../pages/Dashboard/ManageMembers";
+import PostAnnouncement from "../pages/Dashboard/PostAnnouncement";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
         path: "/dashboard/manage-users",
         element: <ManageUsers />,
       },
+      {
+        path: "/dashboard/post-announcement",
+        element: <PostAnnouncement />
+      }
     ],
   },
   {
