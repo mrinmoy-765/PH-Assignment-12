@@ -63,7 +63,7 @@ const Sidebar = () => {
       label: "Apartments",
     },
     {
-      to: "/dashboard/announcements",
+      to: "/dashboard/get-announcement",
       icon: <MdCampaign className="text-xl" />,
       label: "Announcements",
     },
@@ -90,6 +90,11 @@ const Sidebar = () => {
       icon: <MdPayment className="text-xl" />,
       label: "Make Payment",
     },    
+    {
+      icon: <TbLogout2 className="text-xl" />,
+      label: "Log out",
+      onClick: handleLogout,
+    },
   ];
 
   const adminLinks = [
@@ -112,6 +117,16 @@ const Sidebar = () => {
       to: "/dashboard/post-announcement",
       icon: <GrAnnounce className="text-xl" />,
       label: "Post Announcement",
+    },
+    {
+      to: "/dashboard/get-announcement",
+      icon: <MdCampaign className="text-xl" />,
+      label: "Announcements List",
+    },
+    {
+      icon: <TbLogout2 className="text-xl" />,
+      label: "Log out",
+      onClick: handleLogout,
     },
   ];
 

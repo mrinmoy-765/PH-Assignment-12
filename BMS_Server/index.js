@@ -316,12 +316,37 @@ async function run() {
     });
 
     //post announcement
-    app.post("/announcements", async (req, res) => {
+    app.post("/announcements", verifyToken, async (req, res) => {
       console.log("hit announce");
-      const newAnnouncement = req.body;
-      const result = await announcementCollection
-        .insertOne(newAnnouncement);
-      res.send(result); // result.insertedId will be available
+
+      const newAnnouncement = {
+        ...req.body,
+        createdAt: new Date(), // ✅ Server-side timestamp
+      };
+
+      try {
+        const result = await announcementCollection.insertOne(newAnnouncement);
+        res.send(result); // will include insertedId
+      } catch (err) {
+        console.error("Failed to insert announcement:", err);
+        res.status(500).send({ error: "Insertion failed" });
+      }
+    });
+
+    //get announcements
+    app.get("/getannoucements",verifyToken, async(req,res)=>{
+      try{
+        const announcements = await announcementCollection
+        .find()
+        .sort({craetedAt: -1}) //sort by newest
+        .toArray();
+
+        res.json(announcements);
+
+      }catch(err){
+         console.error("Error fetching announcements", err);
+         res.status(500).json({error:"Internal Server Error"});
+      }
     });
 
     // Send a ping to confirm a successful connection

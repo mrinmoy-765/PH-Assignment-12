@@ -6,6 +6,8 @@ npm install react-hook-form react-toastify
 npm i react-helmet
 npm install @tanstack/react-query
 npm install lucide-react
+npm install date-fns
+
 
 functionality:
 URL param based filtering

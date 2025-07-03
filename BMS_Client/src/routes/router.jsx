@@ -10,6 +10,7 @@ import Review from "../pages/Dashboard/Review";
 import DashboardRouter from "../components/DashboardRouter";
 import ManageUsers from "../pages/Dashboard/ManageMembers";
 import PostAnnouncement from "../pages/Dashboard/PostAnnouncement";
+import GetAnnouncements from "../pages/Dashboard/GetAnnouncements";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/post-announcement",
         element: <PostAnnouncement />
+      },
+      {
+        path:"/dashboard/get-announcement",
+        element: <GetAnnouncements/>
       }
     ],
   },
