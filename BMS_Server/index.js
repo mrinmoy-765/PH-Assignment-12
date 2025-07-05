@@ -385,6 +385,24 @@ async function run() {
       }
     });
 
+    //update coupon
+    app.patch("/coupon-availability/:id", async (req, res) => {
+      const id = req.params.id;
+      const { available } = req.body;
+
+      try {
+        const result = await couponCollection.updateOne(
+          { _id: new ObjectId(id) },
+          { $set: { available: available } }
+        );
+
+        res.json(result);
+      } catch (err) {
+        console.error("Availability toggle error:", err);
+        res.status(500).json({ error: "Failed to update availability" });
+      }
+    });
+
     // Send a ping to confirm a successful connection
     //  await client.db("admin").command({ ping: 1 });
     console.log(

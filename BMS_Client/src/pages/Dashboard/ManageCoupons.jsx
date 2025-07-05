@@ -81,6 +81,22 @@ const ManageCoupons = () => {
   if (isLoading) return <p>Loading coupons...</p>;
   if (isError) return <p>Error: {error.message}</p>;
 
+  const handleToggleAvailability = async (id, currentValue) => {
+    try {
+      const res = await AxiosSecure.patch(`/coupon-availability/${id}`, {
+        available: !currentValue,
+      });
+
+      if (res.data.modifiedCount > 0) {
+        Swal.fire("Updated!", "Coupon availability changed.", "success");
+        refetch();
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error!", "Could not update status.", "error");
+    }
+  };
+
   return (
     <div>
       {/* Modal */}
@@ -200,6 +216,7 @@ const ManageCoupons = () => {
               <th>Coupon Code</th>
               <th>Description</th>
               <th>Percentage</th>
+              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -210,6 +227,21 @@ const ManageCoupons = () => {
                 <td>{coupon.code}</td>
                 <td>{coupon.description}</td>
                 <td>{coupon.percentage}%</td>
+                <td>
+                  <button
+                    onClick={() =>
+                      handleToggleAvailability(coupon._id, coupon.available)
+                    }
+                    className={`btn btn-xs text-white ${
+                      coupon.available
+                        ? "bg-green-500 hover:bg-green-600"
+                        : "bg-red-500 hover:bg-red-600"
+                    }`}
+                  >
+                    {coupon.available ? "Available" : "Discontinued"}
+                  </button>
+                </td>
+
                 <td>
                   <button
                     className="btn btn-xs btn-error text-white"
