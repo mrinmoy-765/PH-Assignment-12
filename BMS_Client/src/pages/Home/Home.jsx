@@ -4,6 +4,7 @@ import Carousel from "./Carousel";
 import HeavenlyConnected from "./HeavenlyConnected";
 import Location from "./location";
 import Reviews from "./Reviews";
+import Offer from "./Offer";
 
 const Home = () => {
   return (
@@ -12,6 +13,7 @@ const Home = () => {
       <HeavenlyConnected></HeavenlyConnected>
       <Carousel></Carousel>
       <AboutBuilding></AboutBuilding>
+      <Offer></Offer>
       <Reviews></Reviews>
       <Location></Location>
     </div>
