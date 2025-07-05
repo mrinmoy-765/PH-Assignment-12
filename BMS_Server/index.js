@@ -42,6 +42,7 @@ async function run() {
     const agreementCollection = client.db("BMS").collection("Agreements");
     const reviewCollection = client.db("BMS").collection("Reviews");
     const announcementCollection = client.db("BMS").collection("Announcements");
+    const couponCollection = client.db("BMS").collection("Coupons");
 
     //middleware
     const verifyToken = (req, res, next) => {
@@ -321,12 +322,12 @@ async function run() {
 
       const newAnnouncement = {
         ...req.body,
-        createdAt: new Date(), // ✅ Server-side timestamp
+        createdAt: new Date(),
       };
 
       try {
         const result = await announcementCollection.insertOne(newAnnouncement);
-        res.send(result); // will include insertedId
+        res.send(result);
       } catch (err) {
         console.error("Failed to insert announcement:", err);
         res.status(500).send({ error: "Insertion failed" });
@@ -334,19 +335,25 @@ async function run() {
     });
 
     //get announcements
-    app.get("/getannoucements",verifyToken, async(req,res)=>{
-      try{
+    app.get("/getannoucements", verifyToken, async (req, res) => {
+      try {
         const announcements = await announcementCollection
-        .find()
-        .sort({craetedAt: -1}) //sort by newest
-        .toArray();
+          .find()
+          .sort({ craetedAt: -1 }) //sort by newest
+          .toArray();
 
         res.json(announcements);
-
-      }catch(err){
-         console.error("Error fetching announcements", err);
-         res.status(500).json({error:"Internal Server Error"});
+      } catch (err) {
+        console.error("Error fetching announcements", err);
+        res.status(500).json({ error: "Internal Server Error" });
       }
+    });
+
+    // 🔄 Add newCoupon (POST)
+    app.post("/generate-coupon", async (req, res) => {
+      const newCoupon = req.body;
+      const result = await couponCollection.insertOne(newCoupon);
+      res.send(result);
     });
 
     // Send a ping to confirm a successful connection
