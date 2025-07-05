@@ -422,12 +422,22 @@ async function run() {
       const id = req.params.id;
       const { status } = req.body;
 
-      const result = await agreementCollection.updateOne(
-        { _id: new ObjectId(id) },
-        { $set: { status } }
-      );
+      try {
+        const result = await agreementCollection.updateOne(
+          { _id: new ObjectId(id) },
+          {
+            $set: {
+              status,
+              decisionTime: new Date(),
+            },
+          }
+        );
 
-      res.send(result);
+        res.send(result);
+      } catch (error) {
+        console.error("Error updating agreement:", error);
+        res.status(500).send({ message: "Server error", error: error.message });
+      }
     });
 
     // Patch user role to "member"
@@ -464,6 +474,20 @@ async function run() {
       } catch (error) {
         console.error("Update error:", error);
         res.status(500).send({ message: "Server error", error: error.message });
+      }
+    });
+
+    //get agreement by user id
+    app.get("/get-agreements/:uid", async (req, res) => {
+      const userId = req.params.uid;
+
+      try {
+        const agreements = await agreementCollection.find({ userId }).toArray();
+
+        res.json(agreements);
+      } catch (err) {
+        console.error("Error fetching agreements:", err);
+        res.status(500).json({ message: "Server error", error: err.message });
       }
     });
 

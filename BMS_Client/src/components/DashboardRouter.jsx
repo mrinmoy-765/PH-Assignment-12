@@ -3,7 +3,7 @@ import { useContext } from "react";
 import useAuth from "../hooks/useAuth";
 
 import UserDashboard from "../pages/Dashboard/UserDashboard";
-//import MemberDashboard from "./MemberDashboard";
+import MemberDashboard from "../pages/Dashboard/MemberDashboard";
 import AdminDashboard from "../pages/Dashboard/AdminDashboard";
 
 const DashboardRouter = () => {

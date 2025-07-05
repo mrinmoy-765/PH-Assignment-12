@@ -13,6 +13,7 @@ import PostAnnouncement from "../pages/Dashboard/PostAnnouncement";
 import GetAnnouncements from "../pages/Dashboard/GetAnnouncements";
 import ManageCoupons from "../pages/Dashboard/ManageCoupons";
 import AgreementRequest from "../pages/Dashboard/AgreementRequest";
+import MyAgreement from "../pages/Dashboard/MyAgreement";
 
 const router = createBrowserRouter([
   {
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/agreement-requests",
         element: <AgreementRequest />,
+      },
+      {
+        path: "/dashboard/my-agreement",
+        element: <MyAgreement />,
       },
     ],
   },

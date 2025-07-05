@@ -83,6 +83,26 @@ const Sidebar = () => {
 
   const memberLinks = [
     {
+      to: "/",
+      icon: <MdHome className="text-xl" />,
+      label: "Home",
+    },
+    {
+      to: "/dashboard/userProfile",
+      icon: <RiProfileFill className="text-xl" />,
+      label: "Profile",
+    },
+    {
+      to: "/apartment",
+      icon: <MdApartment className="text-xl" />,
+      label: "Apartments",
+    },
+    {
+      to: "/dashboard/get-announcement",
+      icon: <MdCampaign className="text-xl" />,
+      label: "Announcements",
+    },
+    {
       to: "/dashboard/my-agreement",
       icon: <FaFileSignature className="text-xl" />,
       label: "My Agreement",
@@ -91,6 +111,11 @@ const Sidebar = () => {
       to: "/dashboard/payment",
       icon: <MdPayment className="text-xl" />,
       label: "Make Payment",
+    },
+    {
+      to: "/dashboard/review",
+      icon: <MdOutlineRateReview className="text-xl" />,
+      label: "Leave a review",
     },
     {
       icon: <TbLogout2 className="text-xl" />,
