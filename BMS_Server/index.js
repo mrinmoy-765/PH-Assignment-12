@@ -371,6 +371,20 @@ async function run() {
       }
     });
 
+    //delete coupon
+    app.delete("/delete-coupon/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await couponCollection.deleteOne(query);
+
+        res.json(result);
+      } catch (err) {
+        console.error("Delete error:", err);
+        res.status(500).json({ message: "Server error", error: err.message });
+      }
+    });
+
     // Send a ping to confirm a successful connection
     //  await client.db("admin").command({ ping: 1 });
     console.log(
