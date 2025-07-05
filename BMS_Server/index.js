@@ -158,7 +158,7 @@ async function run() {
             { apartment_no: { $regex: search, $options: "i" } },
             { floor: { $regex: search, $options: "i" } },
           ],
-          rent: { $lte: slider }, // ✅ price filter applied here
+          rent: { $lte: slider },
         };
 
         if (availability === "available") {
@@ -350,10 +350,25 @@ async function run() {
     });
 
     // 🔄 Add newCoupon (POST)
-    app.post("/generate-coupon", async (req, res) => {
+    app.post("/generate-coupon", verifyToken, async (req, res) => {
       const newCoupon = req.body;
       const result = await couponCollection.insertOne(newCoupon);
       res.send(result);
+    });
+
+    //get coupons
+    app.get("/get-coupons", verifyToken, async (req, res) => {
+      try {
+        const coupons = await couponCollection
+          .find()
+          .sort({ craetedAt: -1 }) //sort by newest
+          .toArray();
+
+        res.json(coupons);
+      } catch (err) {
+        console.error("Error fetching coupon", err);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
     });
 
     // Send a ping to confirm a successful connection

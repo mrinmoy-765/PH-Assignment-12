@@ -2,9 +2,12 @@ import React from "react";
 import useAxiosecure from "../../hooks/useAxiosSecure";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
+import { FaTrash } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const ManageCoupons = () => {
-  const AxioSecure = useAxiosecure();
+  const AxiosSecure = useAxiosecure();
 
   const {
     register,
@@ -23,7 +26,7 @@ const ManageCoupons = () => {
 
     // console.log(couponData);
 
-    AxioSecure.post("/generate-coupon", couponData)
+    AxiosSecure.post("/generate-coupon", couponData)
       .then((res) => {
         if (res.data.insertedId) {
           toast.success("Coupon Generated Successfully");
@@ -35,6 +38,48 @@ const ManageCoupons = () => {
         toast.error("Failed to generate Coupon");
       });
   };
+
+  // Fetch all coupons
+  const {
+    data: coupons = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["coupons"],
+    queryFn: async () => {
+      const res = await AxiosSecure.get("/get-coupons");
+      return res.data;
+    },
+  });
+
+  // Handle delete
+  const handleDelete = async (id) => {
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "This will permanently delete the coupon.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        const res = await AxiosSecure.delete(`/delete-coupon/${id}`);
+        if (res.data.deletedCount > 0) {
+          Swal.fire("Deleted!", "Coupon has been removed.", "success");
+          refetch();
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error!", "Something went wrong.", "error");
+      }
+    }
+  };
+
+  if (isLoading) return <p>Loading coupons...</p>;
+  if (isError) return <p>Error: {error.message}</p>;
 
   return (
     <div>
@@ -149,37 +194,32 @@ const ManageCoupons = () => {
       {/* Table */}
       <div className="overflow-x-auto mt-6 work-sans text-[#5C5470]">
         <table className="table table-zebra">
-          {/* head */}
-          <thead>
+          <thead className="text-[#5b5174]">
             <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Job</th>
-              <th>Favorite Color</th>
+              <th>#</th>
+              <th>Coupon Code</th>
+              <th>Description</th>
+              <th>Percentage</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {/* row 1 */}
-            <tr>
-              <th>1</th>
-              <td>Cy Ganderton</td>
-              <td>Quality Control Specialist</td>
-              <td>Blue</td>
-            </tr>
-            {/* row 2 */}
-            <tr>
-              <th>2</th>
-              <td>Hart Hagerty</td>
-              <td>Desktop Support Technician</td>
-              <td>Purple</td>
-            </tr>
-            {/* row 3 */}
-            <tr>
-              <th>3</th>
-              <td>Brice Swyre</td>
-              <td>Tax Accountant</td>
-              <td>Red</td>
-            </tr>
+            {coupons.map((coupon, index) => (
+              <tr key={coupon._id}>
+                <td>{index + 1}</td>
+                <td>{coupon.code}</td>
+                <td>{coupon.description}</td>
+                <td>{coupon.percentage}%</td>
+                <td>
+                  <button
+                    className="btn btn-xs btn-error text-white"
+                    onClick={() => handleDelete(coupon._id)}
+                  >
+                    <FaTrash />
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
