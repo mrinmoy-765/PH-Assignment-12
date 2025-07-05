@@ -14,6 +14,7 @@ import { MdOutlineRateReview } from "react-icons/md";
 import { TbLogout2 } from "react-icons/tb";
 import { RiProfileFill } from "react-icons/ri";
 import { RiCoupon3Fill } from "react-icons/ri";
+import { GoGitPullRequest } from "react-icons/go";
 
 const Sidebar = () => {
   const { mongoUser, loading, logOut } = useAuth();
@@ -90,7 +91,7 @@ const Sidebar = () => {
       to: "/dashboard/payment",
       icon: <MdPayment className="text-xl" />,
       label: "Make Payment",
-    },    
+    },
     {
       icon: <TbLogout2 className="text-xl" />,
       label: "Log out",
@@ -104,7 +105,7 @@ const Sidebar = () => {
       icon: <MdHome className="text-xl" />,
       label: "Home",
     },
-        {
+    {
       to: "/dashboard/userProfile",
       icon: <RiProfileFill className="text-xl" />,
       label: "Profile",
@@ -125,6 +126,11 @@ const Sidebar = () => {
       label: "Announcements List",
     },
     {
+      to: "/dashboard/agreement-requests",
+      icon: <GoGitPullRequest className="text-xl" />,
+      label: "Agreement Requests",
+    },
+    {
       to: "/dashboard/manage-coupons",
       icon: <RiCoupon3Fill className="text-xl" />,
       label: "Manage Coupons",
@@ -136,16 +142,14 @@ const Sidebar = () => {
     },
   ];
 
-
   const renderLinks =
-  mongoUser?.role === "user"
-    ? userLinks
-    : mongoUser?.role === "member"
-    ? memberLinks
-    : mongoUser?.role === "admin"
-    ? adminLinks
-    : [];
-
+    mongoUser?.role === "user"
+      ? userLinks
+      : mongoUser?.role === "member"
+      ? memberLinks
+      : mongoUser?.role === "admin"
+      ? adminLinks
+      : [];
 
   return (
     <div className="w-64 bg-[#5C5470] text-white min-h-screen p-4">

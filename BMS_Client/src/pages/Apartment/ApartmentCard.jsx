@@ -17,7 +17,7 @@ const ApartmentCard = ({ apartment }) => {
     is_available,
   } = apartment;
 
-  const { user } = useAuth();
+  const { user, mongoUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,6 +29,22 @@ const ApartmentCard = ({ apartment }) => {
   ];
 
   const handleAgreement = () => {
+    //validate user
+    if (mongoUser.role === "member" || mongoUser.role === "admin") {
+      Swal.fire({
+        title: "Invalid User.",
+        text: "Admin & Members are not eligible for Agreement",
+        icon: "warning",
+        customClass: {
+          popup: "my-swal-popup",
+          title: "my-swal-title",
+          htmlContainer: "my-swal-text",
+          confirmButton: "my-swal-button",
+        },
+      });
+      return;
+    }
+
     //validate if appartment is available or not
     if (is_available === false) {
       Swal.fire({
@@ -45,11 +61,13 @@ const ApartmentCard = ({ apartment }) => {
       return;
     }
 
-    if (user && user.email) {
+    if (user && user.uid) {
       //send agreement details in database
       const agreementItem = {
+        userId: user.uid,
         email: user.email,
-        name: user.name,
+        name: user.displayName,
+        user_image: user.photoURL,
         apartment_no,
         block_name,
         floor_no,

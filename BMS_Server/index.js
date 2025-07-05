@@ -47,7 +47,7 @@ async function run() {
     //middleware
     const verifyToken = (req, res, next) => {
       const token = req.cookies.accessToken;
-      console.log("inside verify token", token);
+      // console.log("inside verify token", token);
 
       if (!token) return res.status(401).send("Unauthorized");
 
@@ -217,29 +217,34 @@ async function run() {
     //Make an Agreement
     // POST: Create agreement with validation
     app.post("/agreement", verifyToken, async (req, res) => {
-      const newAgreement = req.body;
-      const userEmail = newAgreement.email;
+      const userId = req.body.userId;
 
       try {
-        // Check for existing pending or approved agreement for this user
-        const existing = await agreementCollection.findOne({
-          email: userEmail,
-          status: { $in: ["pending", "approved"] },
+        //console.log("Checking for existing agreement for user:", userId);
+
+        const existingAgreement = await agreementCollection.findOne({
+          userId: userId,
+          status: { $in: ["pending", "checked"] },
         });
 
-        if (existing) {
-          return res.status(400).send({
+        if (existingAgreement) {
+          return res.status(400).json({
             message:
-              "You already have a pending or approved agreement. Cannot request another.",
+              "You already have a pending or checked agreement. Contact Admin for further enquery.",
           });
         }
 
-        // Insert new agreement
+        // Proceed to create agreement
+        const newAgreement = {
+          ...req.body,
+          createdAt: new Date(),
+        };
+
         const result = await agreementCollection.insertOne(newAgreement);
-        res.status(201).send(result);
-      } catch (error) {
-        console.error("Error inserting agreement:", error);
-        res.status(500).send({ message: "Server error" });
+        return res.status(201).json(result);
+      } catch (err) {
+        console.error("Error creating agreement:", err);
+        return res.status(500).json({ message: "Server error" });
       }
     });
 
@@ -400,6 +405,65 @@ async function run() {
       } catch (err) {
         console.error("Availability toggle error:", err);
         res.status(500).json({ error: "Failed to update availability" });
+      }
+    });
+
+    //Agreement Part
+    // Get only pending agreements
+    app.get("/agreements", async (req, res) => {
+      const status = req.query.status;
+      const query = status ? { status } : {};
+      const result = await agreementCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    //Patch status to "checked"
+    app.patch("/agreements/:id", async (req, res) => {
+      const id = req.params.id;
+      const { status } = req.body;
+
+      const result = await agreementCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { status } }
+      );
+
+      res.send(result);
+    });
+
+    // Patch user role to "member"
+    app.patch("/users/role/:uid", async (req, res) => {
+      const uid = req.params.uid;
+      const { role } = req.body;
+
+      const result = await BMS_userCollection.updateOne(
+        { uid },
+        { $set: { role } }
+      );
+
+      res.send(result);
+    });
+
+    //change apartment availability
+    app.patch("/apartments/:apartment_no/availability", async (req, res) => {
+      const apartment_no = req.params.apartment_no;
+      const { is_available } = req.body;
+
+      try {
+        const result = await apartmentsCollection.updateOne(
+          { apartment_no: apartment_no },
+          { $set: { is_available: is_available } }
+        );
+
+        if (result.modifiedCount > 0) {
+          res.send({ message: "Apartment availability updated successfully." });
+        } else {
+          res
+            .status(404)
+            .send({ message: "Apartment not found or already updated." });
+        }
+      } catch (error) {
+        console.error("Update error:", error);
+        res.status(500).send({ message: "Server error", error: error.message });
       }
     });
 

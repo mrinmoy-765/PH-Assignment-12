@@ -12,7 +12,7 @@ import ManageUsers from "../pages/Dashboard/ManageMembers";
 import PostAnnouncement from "../pages/Dashboard/PostAnnouncement";
 import GetAnnouncements from "../pages/Dashboard/GetAnnouncements";
 import ManageCoupons from "../pages/Dashboard/ManageCoupons";
-
+import AgreementRequest from "../pages/Dashboard/AgreementRequest";
 
 const router = createBrowserRouter([
   {
@@ -51,16 +51,20 @@ const router = createBrowserRouter([
       },
       {
         path: "/dashboard/post-announcement",
-        element: <PostAnnouncement />
+        element: <PostAnnouncement />,
       },
       {
-        path:"/dashboard/get-announcement",
-        element: <GetAnnouncements/>,
+        path: "/dashboard/get-announcement",
+        element: <GetAnnouncements />,
       },
       {
         path: "/dashboard/manage-coupons",
-        element: <ManageCoupons/>,
-      }
+        element: <ManageCoupons />,
+      },
+      {
+        path: "/dashboard/agreement-requests",
+        element: <AgreementRequest />,
+      },
     ],
   },
   {

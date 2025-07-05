@@ -7,7 +7,7 @@ npm i react-helmet
 npm install @tanstack/react-query
 npm install lucide-react
 npm install date-fns
-
+npm install --save moment
 
 functionality:
 URL param based filtering
