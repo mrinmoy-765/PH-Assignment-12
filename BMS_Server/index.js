@@ -5,6 +5,7 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5000;
 require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // Allow frontend origin
@@ -43,6 +44,7 @@ async function run() {
     const reviewCollection = client.db("BMS").collection("Reviews");
     const announcementCollection = client.db("BMS").collection("Announcements");
     const couponCollection = client.db("BMS").collection("Coupons");
+    const paymentCollection = client.db("BMS").collection("Payments");
 
     //middleware
     const verifyToken = (req, res, next) => {
@@ -488,6 +490,64 @@ async function run() {
       } catch (err) {
         console.error("Error fetching agreements:", err);
         res.status(500).json({ message: "Server error", error: err.message });
+      }
+    });
+
+    // payment intent
+    app.post("/create-payment-intent", async (req, res) => {
+      const { price } = req.body;
+      const amount = parseInt(price * 100);
+      console.log(amount, "amount inside the intent");
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        payment_method_types: ["card"],
+      });
+
+      res.send({
+        clientSecret: paymentIntent.client_secret,
+      });
+    });
+
+    // Save Payment History
+    app.post("/payments", async (req, res) => {
+      try {
+        const paymentData = req.body;
+
+        if (!paymentData || !paymentData.transactionId || !paymentData.email) {
+          return res.status(400).json({
+            message: "Invalid payment data",
+          });
+        }
+
+        const result = await paymentCollection.insertOne(paymentData);
+
+        res.status(201).json({
+          message: "Payment saved successfully",
+          paymentResult: result,
+        });
+      } catch (error) {
+        console.error("Error saving payment:", error);
+        res.status(500).json({
+          message: "Internal server error",
+          error: error.message,
+        });
+      }
+    });
+
+    app.get("/payment-history/:uid", async (req, res) => {
+      try {
+        const uid = req.params.uid;
+        const payments = await paymentCollection
+          .find({ UserId: uid })
+          .sort({ date: -1 }) // newest first
+          .toArray();
+
+        res.send(payments);
+      } catch (error) {
+        console.error("Failed to fetch payment history:", error);
+        res.status(500).send({ message: "Server error" });
       }
     });
 

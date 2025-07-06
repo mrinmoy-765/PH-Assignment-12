@@ -15,6 +15,7 @@ import { TbLogout2 } from "react-icons/tb";
 import { RiProfileFill } from "react-icons/ri";
 import { RiCoupon3Fill } from "react-icons/ri";
 import { GoGitPullRequest } from "react-icons/go";
+import { BsClockHistory } from "react-icons/bs";
 
 const Sidebar = () => {
   const { mongoUser, loading, logOut } = useAuth();
@@ -111,6 +112,11 @@ const Sidebar = () => {
       to: "/dashboard/payment",
       icon: <MdPayment className="text-xl" />,
       label: "Make Payment",
+    },
+    {
+      to: "/dashboard/payment-history",
+      icon: <BsClockHistory className="text-xl" />,
+      label: "Payment History",
     },
     {
       to: "/dashboard/review",

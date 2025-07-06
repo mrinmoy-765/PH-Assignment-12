@@ -8,6 +8,11 @@ npm install @tanstack/react-query
 npm install lucide-react
 npm install date-fns
 npm install --save moment
+npm i @stripe/react-stripe-js
+npm install jspdf jspdf-autotable
+
+Backend:
+npm install --save stripe
 
 functionality:
 URL param based filtering

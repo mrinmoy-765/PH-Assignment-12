@@ -14,6 +14,8 @@ import GetAnnouncements from "../pages/Dashboard/GetAnnouncements";
 import ManageCoupons from "../pages/Dashboard/ManageCoupons";
 import AgreementRequest from "../pages/Dashboard/AgreementRequest";
 import MyAgreement from "../pages/Dashboard/MyAgreement";
+import Payment from "../pages/Dashboard/Payment/Payment";
+import PaymentHistory from "../pages/Dashboard/PaymentHistory";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +71,14 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/my-agreement",
         element: <MyAgreement />,
+      },
+      {
+        path: "/dashboard/payment",
+        element: <Payment />,
+      },
+      {
+        path: "/dashboard/payment-history",
+        element: <PaymentHistory />,
       },
     ],
   },
