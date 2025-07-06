@@ -63,20 +63,28 @@ const PaymentHistory = () => {
       </div>
       <table className="table table-zebra">
         <thead>
-          <tr>
+          <tr className="text-center">
             <th>#</th>
             <th>Name</th>
-            <th>Amount (৳)</th>
+            <th>Rent (৳)</th>
+            <th>Coupon Code - Percentage</th>
+            <th>Amount Paid (৳)</th>
+            <th>Rent Paid off</th>
             <th>Transaction ID</th>
             <th>Date</th>
           </tr>
         </thead>
         <tbody>
           {payments.map((payment, index) => (
-            <tr key={payment._id}>
+            <tr className="text-center" key={payment._id}>
               <td>{index + 1}</td>
               <td>{payment.name}</td>
-              <td>{payment.Amount}</td>
+              <td>{payment.Rent}</td>
+              <td>
+                {payment.Coupon.code}-{payment.Coupon.percentage}%
+              </td>
+              <td>{payment.Amount_Paid}</td>
+              <td>{payment.Rent_Month}</td>
               <td className="text-xs break-all">{payment.transactionId}</td>
               <td>{new Date(payment.date).toLocaleString()}</td>
             </tr>

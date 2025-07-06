@@ -378,6 +378,21 @@ async function run() {
       }
     });
 
+    //get available coupons
+    app.get("/get-availableCoupons", verifyToken, async (req, res) => {
+      try {
+        const coupons = await couponCollection
+          .find({ available: true })
+          .sort({ createdAt: -1 })
+          .toArray();
+
+        res.json(coupons);
+      } catch (err) {
+        console.error("Error fetching coupon", err);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
+
     //delete coupon
     app.delete("/delete-coupon/:id", async (req, res) => {
       try {

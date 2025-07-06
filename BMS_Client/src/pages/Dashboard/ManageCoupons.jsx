@@ -21,7 +21,7 @@ const ManageCoupons = () => {
       code: data.code,
       percentage: data.percentage,
       description: data.description,
-      available: "true",
+      available: true,
     };
 
     // console.log(couponData);

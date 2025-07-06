@@ -2,6 +2,7 @@ import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAgreement from "../../../hooks/useAgreement";
+import useCoupon from "../../../hooks/UseCoupon";
 import useAuth from "../../../hooks/useAuth";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +10,14 @@ import { toast } from "react-toastify";
 
 const CheckoutForm = () => {
   const { data: agreements = [] } = useAgreement();
+  const { data: coupons = [], isLoading, isError } = useCoupon();
+
+  const [baseRent, setBaseRent] = useState(0);
+  const [discountedRent, setDiscountedRent] = useState(0);
+  const [discountAmount, setDiscountAmount] = useState(0);
+
+  const [selectedCoupon, setSelectedCoupon] = useState(null); // store coupon object
+
   const rent = agreements[0]?.rent || 0;
   const apartment = agreements[0]?.apartment_no || "";
   const name = agreements[0]?.name || "";
@@ -24,15 +33,62 @@ const CheckoutForm = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const [selectedMonth, setSelectedMonth] = useState("Choose Month ⬇️");
+  // const [selectedCoupon, setSelectedCoupon] = useState("Select Coupon ⬇️");
+
   useEffect(() => {
-    if (rent > 0) {
+    if (agreements.length > 0) {
+      const rentAmount = agreements[0]?.rent || 0;
+      setBaseRent(rentAmount);
+      setDiscountedRent(rentAmount);
+      setDiscountAmount(0);
+    }
+  }, [agreements]);
+
+  useEffect(() => {
+    if (discountedRent > 0) {
       axiosSecure
-        .post("/create-payment-intent", { price: rent })
+        .post("/create-payment-intent", { price: discountedRent })
         .then((res) => {
           setClientSecret(res.data.clientSecret);
         });
     }
-  }, [rent, axiosSecure]);
+  }, [discountedRent, axiosSecure]);
+
+  const handleSelect = (month) => {
+    setSelectedMonth(month);
+  };
+
+  const handleCoupon = (coupon) => {
+    setSelectedCoupon(coupon);
+
+    const discount = (baseRent * parseFloat(coupon.percentage)) / 100;
+    const updatedRent = baseRent - discount;
+
+    setDiscountAmount(discount.toFixed(2));
+    setDiscountedRent(updatedRent.toFixed(2));
+  };
+
+  const removeCoupon = () => {
+    setSelectedCoupon(null);
+    setDiscountAmount(0);
+    setDiscountedRent(baseRent);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -81,7 +137,10 @@ const CheckoutForm = () => {
           email: user.email,
           name: user.displayName,
           UserId: user.uid,
-          Amount: rent,
+          Rent: rent,
+          Coupon: selectedCoupon,
+          Amount_Paid: discountedRent,
+          Rent_Month: selectedMonth,
           transactionId: paymentIntent.id,
           date: new Date(),
         };
@@ -94,6 +153,9 @@ const CheckoutForm = () => {
         }
       }
     }
+
+    if (isLoading) return <p>Loading coupons...</p>;
+    if (isError) return <p>Failed to load coupons.</p>;
   };
 
   return (
@@ -114,10 +176,75 @@ const CheckoutForm = () => {
           <span className="font-semibold">Apartment No:</span> {apartment}
         </p>
         <p>
-          <span className="font-semibold">Rent Amount:</span> ৳{rent}
+          <span className="font-semibold">Rent (Original):</span> ৳{baseRent}
+        </p>
+        {selectedCoupon && (
+          <>
+            <p>
+              <span className="font-semibold">Coupon Applied:</span>{" "}
+              {selectedCoupon.code} - {selectedCoupon.percentage}%
+            </p>
+            <p>
+              <span className="font-semibold">Discount:</span> -৳
+              {discountAmount}
+            </p>
+          </>
+        )}
+        <p className="font-bold text-lg text-[#5C5470]">
+          Final Amount: ৳{discountedRent}
         </p>
       </div>
 
+      {/* month and coupons */}
+      <div className="flex justify-start my-3.5">
+        {/* month */}
+        <div className="dropdown dropdown-bottom  dropdown-end">
+          <div tabIndex={0} role="button" className="btn m-1">
+            {selectedMonth}
+          </div>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+          >
+            {months.map((month) => (
+              <li key={month}>
+                <button onClick={() => handleSelect(month)}>{month}</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+        {/* coupon */}
+        <div className="dropdown dropdown-bottom dropdown-end">
+          <div tabIndex={0} role="button" className="btn m-1">
+            {selectedCoupon
+              ? `${selectedCoupon.code} - ${selectedCoupon.percentage}%`
+              : "Select Coupon ⬇️"}
+          </div>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+          >
+            {coupons.map((coupon) => (
+              <li key={coupon._id.$oid || coupon._id}>
+                <button onClick={() => handleCoupon(coupon)}>
+                  {coupon.code} - {coupon.percentage}%
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Remove coupon button */}
+        {selectedCoupon && (
+          <button
+            onClick={removeCoupon}
+            className="btn btn-warning mt-2"
+            type="button"
+          >
+            Remove Coupon
+          </button>
+        )}
+      </div>
       {/* Payment Form */}
       <form onSubmit={handleSubmit}>
         <div className="p-4 border rounded-md mb-4">
@@ -144,7 +271,7 @@ const CheckoutForm = () => {
           type="submit"
           disabled={!stripe || !clientSecret}
         >
-          Pay ৳{rent}
+          Pay ৳{discountedRent}
         </button>
 
         {error && <p className="text-red-500 mt-2">{error}</p>}
