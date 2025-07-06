@@ -4,7 +4,7 @@ import useAuth from "./useAuth";
 import Swal from "sweetalert2";
 
 const axiosSecure = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "https://bms-server-flame.vercel.app",
   withCredentials: true, // 👈 Important: allows cookies to be sent with requests
 });
 

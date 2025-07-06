@@ -8,7 +8,7 @@ secure authentication system and dynamic dashboard experiences for different use
 
 ## 🌐 Live URL
 
-> [🚀 View Live Site](https://your-live-site-link.com)
+> [🚀 View Live Site](https://incandescent-cocada-df31e4.netlify.app/)
 
 ---
 

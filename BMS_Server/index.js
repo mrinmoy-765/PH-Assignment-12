@@ -14,7 +14,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["https://incandescent-cocada-df31e4.netlify.app"],
     credentials: true,
   })
 );
@@ -36,7 +36,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server (optional starting in v4.7)
-    await client.connect();
+    //await client.connect();
 
     const BMS_userCollection = client.db("BMS").collection("BmsUsers");
     const apartmentsCollection = client.db("BMS").collection("Apartments");

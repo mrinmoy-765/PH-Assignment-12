@@ -115,8 +115,8 @@ const AuthProvider = ({ children }) => {
           .post("/jwt", userInfo, { withCredentials: true })
           .then(() => {
             // After JWT is set, fetch the MongoDB user
-            return axios.get("http://localhost:5000/users", {
-             params: { uid },
+            return axios.get("https://bms-server-flame.vercel.app/users", {
+              params: { uid },
               withCredentials: true,
             });
           })
