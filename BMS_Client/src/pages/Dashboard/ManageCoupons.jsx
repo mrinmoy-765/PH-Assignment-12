@@ -31,6 +31,7 @@ const ManageCoupons = () => {
         if (res.data.insertedId) {
           toast.success("Coupon Generated Successfully");
           reset();
+          refetch();
         }
       })
       .catch((error) => {

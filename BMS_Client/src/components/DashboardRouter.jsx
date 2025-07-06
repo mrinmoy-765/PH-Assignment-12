@@ -13,7 +13,9 @@ const DashboardRouter = () => {
     return (
       <div className="flex items-center justify-center h-screen">
         <span className="loading loading-spinner text-accent"></span>
-        <span className="text-cyan-500 text-lg">Refresh Page...</span>
+        <span className="text-cyan-500 text-lg">
+          Refresh Page if it takes too long...
+        </span>
       </div>
     );
   }
