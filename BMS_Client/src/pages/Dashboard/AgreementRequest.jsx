@@ -9,6 +9,8 @@ const AgreementRequest = () => {
 
   const {
     data: requests = [],
+    isError,
+    error,
     isLoading,
     refetch,
   } = useQuery({
@@ -58,6 +60,15 @@ const AgreementRequest = () => {
   if (isLoading) return <p>Loading...</p>;
 
   if (requests.length === 0) return <p>No agreement requests at this time.</p>;
+
+  {
+    isLoading && <p>Loading...</p>;
+  }
+  {
+    isError && error?.response?.status === 403 && (
+      <p className="text-red-500">Forbidden: You are not an admin.</p>
+    );
+  }
 
   return (
     <div className="overflow-x-auto p-4">

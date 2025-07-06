@@ -60,6 +60,18 @@ async function run() {
       });
     };
 
+    // use verify admin after verifyToken
+    const verifyAdmin = async (req, res, next) => {
+      const email = req.decoded.email;
+      const query = { email: email };
+      const user = await userCollection.findOne(query);
+      const isAdmin = user?.role === "admin";
+      if (!isAdmin) {
+        return res.status(403).send({ message: "forbidden access" });
+      }
+      next();
+    };
+
     //Auth related APIs
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -252,37 +264,42 @@ async function run() {
 
     //Admin Information Part----------------------------------------------------------------------------------------------------------
 
-    app.get("/dashboard/admin-stats", verifyToken, async (req, res) => {
-      try {
-        const totalRooms = await apartmentsCollection.countDocuments();
-        const availableRooms = await apartmentsCollection.countDocuments({
-          is_available: true,
-        });
-        const unavailableRooms = await apartmentsCollection.countDocuments({
-          is_available: false,
-        });
+    app.get(
+      "/dashboard/admin-stats",
+      verifyToken,
+      verifyAdmin,
+      async (req, res) => {
+        try {
+          const totalRooms = await apartmentsCollection.countDocuments();
+          const availableRooms = await apartmentsCollection.countDocuments({
+            is_available: true,
+          });
+          const unavailableRooms = await apartmentsCollection.countDocuments({
+            is_available: false,
+          });
 
-        const totalUsers = await BMS_userCollection.countDocuments({
-          role: "user",
-        });
-        const memberUsers = await BMS_userCollection.countDocuments({
-          role: "member",
-        });
+          const totalUsers = await BMS_userCollection.countDocuments({
+            role: "user",
+          });
+          const memberUsers = await BMS_userCollection.countDocuments({
+            role: "member",
+          });
 
-        res.send({
-          totalRooms,
-          availableRooms,
-          unavailableRooms,
-          totalUsers,
-          memberUsers,
-        });
-      } catch (error) {
-        res.status(500).send({ error: "Failed to fetch dashboard stats" });
+          res.send({
+            totalRooms,
+            availableRooms,
+            unavailableRooms,
+            totalUsers,
+            memberUsers,
+          });
+        } catch (error) {
+          res.status(500).send({ error: "Failed to fetch dashboard stats" });
+        }
       }
-    });
+    );
 
     //get members
-    app.get("/people", async (req, res) => {
+    app.get("/people", verifyToken, verifyAdmin, async (req, res) => {
       try {
         const { role = "member", search = "" } = req.query;
 
@@ -306,7 +323,7 @@ async function run() {
     });
 
     //remove user
-    app.patch("/people/:id", async (req, res) => {
+    app.patch("/people/:id", verifyToken, verifyAdmin, async (req, res) => {
       const userId = req.params.id;
       const { role } = req.body;
 
@@ -324,7 +341,7 @@ async function run() {
     });
 
     //post announcement
-    app.post("/announcements", verifyToken, async (req, res) => {
+    app.post("/announcements", verifyToken, verifyAdmin, async (req, res) => {
       console.log("hit announce");
 
       const newAnnouncement = {
@@ -357,26 +374,32 @@ async function run() {
     });
 
     // 🔄 Add newCoupon (POST)
-    app.post("/generate-coupon", verifyToken, async (req, res) => {
+    app.post("/generate-coupon", verifyToken, verifyAdmin, async (req, res) => {
       const newCoupon = req.body;
       const result = await couponCollection.insertOne(newCoupon);
       res.send(result);
     });
 
     //get coupons
-    app.get("/get-coupons", verifyToken, async (req, res) => {
-      try {
-        const coupons = await couponCollection
-          .find()
-          .sort({ craetedAt: -1 }) //sort by newest
-          .toArray();
+    app.get(
+      "/get-coupons",
+      verifyToken,
+      verifyAdmin,
+      verifyAdmin,
+      async (req, res) => {
+        try {
+          const coupons = await couponCollection
+            .find()
+            .sort({ craetedAt: -1 }) //sort by newest
+            .toArray();
 
-        res.json(coupons);
-      } catch (err) {
-        console.error("Error fetching coupon", err);
-        res.status(500).json({ error: "Internal Server Error" });
+          res.json(coupons);
+        } catch (err) {
+          console.error("Error fetching coupon", err);
+          res.status(500).json({ error: "Internal Server Error" });
+        }
       }
-    });
+    );
 
     //get available coupons
     app.get("/get-availableCoupons", verifyToken, async (req, res) => {
@@ -394,40 +417,50 @@ async function run() {
     });
 
     //delete coupon
-    app.delete("/delete-coupon/:id", async (req, res) => {
-      try {
-        const id = req.params.id;
-        const query = { _id: new ObjectId(id) };
-        const result = await couponCollection.deleteOne(query);
+    app.delete(
+      "/delete-coupon/:id",
+      verifyToken,
+      verifyAdmin,
+      async (req, res) => {
+        try {
+          const id = req.params.id;
+          const query = { _id: new ObjectId(id) };
+          const result = await couponCollection.deleteOne(query);
 
-        res.json(result);
-      } catch (err) {
-        console.error("Delete error:", err);
-        res.status(500).json({ message: "Server error", error: err.message });
+          res.json(result);
+        } catch (err) {
+          console.error("Delete error:", err);
+          res.status(500).json({ message: "Server error", error: err.message });
+        }
       }
-    });
+    );
 
     //update coupon
-    app.patch("/coupon-availability/:id", async (req, res) => {
-      const id = req.params.id;
-      const { available } = req.body;
+    app.patch(
+      "/coupon-availability/:id",
+      verifyToken,
+      verifyAdmin,
+      async (req, res) => {
+        const id = req.params.id;
+        const { available } = req.body;
 
-      try {
-        const result = await couponCollection.updateOne(
-          { _id: new ObjectId(id) },
-          { $set: { available: available } }
-        );
+        try {
+          const result = await couponCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { available: available } }
+          );
 
-        res.json(result);
-      } catch (err) {
-        console.error("Availability toggle error:", err);
-        res.status(500).json({ error: "Failed to update availability" });
+          res.json(result);
+        } catch (err) {
+          console.error("Availability toggle error:", err);
+          res.status(500).json({ error: "Failed to update availability" });
+        }
       }
-    });
+    );
 
     //Agreement Part
     // Get only pending agreements
-    app.get("/agreements", async (req, res) => {
+    app.get("/agreements", verifyToken, verifyAdmin, async (req, res) => {
       const status = req.query.status;
       const query = status ? { status } : {};
       const result = await agreementCollection.find(query).toArray();
@@ -435,7 +468,7 @@ async function run() {
     });
 
     //Patch status to "checked"
-    app.patch("/agreements/:id", async (req, res) => {
+    app.patch("/agreements/:id", verifyToken, verifyAdmin, async (req, res) => {
       const id = req.params.id;
       const { status } = req.body;
 
@@ -458,17 +491,22 @@ async function run() {
     });
 
     // Patch user role to "member"
-    app.patch("/users/role/:uid", async (req, res) => {
-      const uid = req.params.uid;
-      const { role } = req.body;
+    app.patch(
+      "/users/role/:uid",
+      verifyToken,
+      verifyAdmin,
+      async (req, res) => {
+        const uid = req.params.uid;
+        const { role } = req.body;
 
-      const result = await BMS_userCollection.updateOne(
-        { uid },
-        { $set: { role } }
-      );
+        const result = await BMS_userCollection.updateOne(
+          { uid },
+          { $set: { role } }
+        );
 
-      res.send(result);
-    });
+        res.send(result);
+      }
+    );
 
     //change apartment availability
     app.patch("/apartments/:apartment_no/availability", async (req, res) => {
@@ -495,7 +533,7 @@ async function run() {
     });
 
     //get agreement by user id
-    app.get("/get-agreements/:uid", async (req, res) => {
+    app.get("/get-agreements/:uid", verifyToken, async (req, res) => {
       const userId = req.params.uid;
 
       try {
@@ -509,7 +547,7 @@ async function run() {
     });
 
     // payment intent
-    app.post("/create-payment-intent", async (req, res) => {
+    app.post("/create-payment-intent", verifyToken, async (req, res) => {
       const { price } = req.body;
       const amount = parseInt(price * 100);
       console.log(amount, "amount inside the intent");
@@ -526,7 +564,7 @@ async function run() {
     });
 
     // Save Payment History
-    app.post("/payments", async (req, res) => {
+    app.post("/payments", verifyToken, async (req, res) => {
       try {
         const paymentData = req.body;
 
@@ -551,7 +589,7 @@ async function run() {
       }
     });
 
-    app.get("/payment-history/:uid", async (req, res) => {
+    app.get("/payment-history/:uid", verifyToken, async (req, res) => {
       try {
         const uid = req.params.uid;
         const payments = await paymentCollection
